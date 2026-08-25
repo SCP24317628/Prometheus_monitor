@@ -1,0 +1,7 @@
+api_version: monitoring.inference/v1
+kind: MetricsPlugin
+metadata: {name: nvidia_dcgm, version: 0.1.0}
+spec:
+  default_enabled: false
+  exporter: {port: 9400, metrics_path: /metrics, implementation: NVIDIA DCGM Exporter}
+  requires: {runtime: nvidia, toolkit: NVIDIA Container Toolkit}

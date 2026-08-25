@@ -1,0 +1,36 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Local credentials and machine-specific inventory
+sijiqing.txt
+DeepSeek V4 Flash PD 分离部署指南*.md
+deploy/dsv4/
+config/platform.yml
+config/platform.example.yml
+config/monitoring.local.yml
+
+# Generated/runtime data
+monitoring/.env
+monitoring/generated/access.json
+monitoring/generated/nodes/
+monitoring/generated/prometheus.yml
+monitoring/data/
+monitoring/prometheus/prometheus.yml
+.artifacts/
+runtime/
+
+# Local/temporary release artifacts
+release/*.zip
+release/SHA256SUMS*
+release/STATUS.md
+images/**/*.tar
+images/**/*.tar.gz
+images/center/Dockerfile.remote-builder
+images/center/entrypoint.remote.sh
+
+# Local documents and IDE files
+*.pdf
+.idea/
+.vscode/

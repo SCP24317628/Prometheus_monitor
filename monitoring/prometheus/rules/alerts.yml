@@ -1,0 +1,31 @@
+groups:
+  - name: inference-monitoring
+    rules:
+      - alert: MetricsTargetDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Metrics target {{ $labels.instance }} is down"
+      - alert: MusaExporterCollectionFailed
+        expr: musa_exporter_scrape_success == 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MUSA metrics collection failed on {{ $labels.node }}"
+      - alert: AcceleratorMemoryNearlyFull
+        expr: accelerator_gpu_memory_utilization_ratio > 0.95
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GPU memory exceeds 95% on {{ $labels.node }} device {{ $labels.device }}"
+      - alert: SglangRequestQueueGrowing
+        expr: max by (cluster, node, role) ({__name__="sglang:num_queue_reqs"}) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SGLang request queue is elevated on {{ $labels.node }}"

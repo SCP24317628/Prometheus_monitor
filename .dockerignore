@@ -1,0 +1,19 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+.pytest_cache
+sijiqing.txt
+DeepSeek V4 Flash PD 分离部署指南*.md
+deploy/dsv4
+config/monitoring.local.yml
+config/platform*.yml
+monitoring/generated
+monitoring/data
+runtime
+release
+*.zip
+*.tar
+*.tar.gz
+images/center/Dockerfile.remote-builder
+images/center/entrypoint.remote.sh

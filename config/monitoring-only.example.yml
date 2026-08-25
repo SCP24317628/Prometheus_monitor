@@ -1,0 +1,24 @@
+schema_version: 1
+platform:
+  cluster: inference-cluster-01
+  environment: production
+  public_host: 192.0.2.10
+  grafana_port: 3000
+  prometheus_port: 9090
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  retention: 30d
+nodes:
+  - name: node-01
+    address: 192.0.2.11
+    accelerator_vendor: musa
+    plugins:
+      node: {enabled: true, metrics_group: performance, port: 9100}
+      musa: {enabled: true, metrics_group: performance, port: 9500}
+services:
+  - name: inference-instance-01
+    node: node-01
+    role: inference
+    port: 30000
+    metrics_path: /metrics
+    labels: {model: replace-me, deployment: replace-me, version: replace-me, scenario: production}

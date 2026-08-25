@@ -1,0 +1,20 @@
+api_version: monitoring.inference/v1
+kind: MetricsPlugin
+metadata:
+  name: node
+  version: 0.1.0
+spec:
+  exporter:
+    image: docker.m.daocloud.io/prom/node-exporter:v1.9.1
+    port: 9100
+    metrics_path: /metrics
+  requires:
+    platforms: [linux-amd64]
+    mounts:
+      - /proc:ro
+      - /sys:ro
+      - /:ro,rslave
+  metric_groups:
+    core: [cpu, meminfo, filesystem, loadavg, netdev]
+    performance: [infiniband, pressure, softnet, vmstat]
+    detailed: [ethtool, interrupts, processes]

@@ -1,0 +1,56 @@
+api_version: monitoring.inference/v1
+kind: MetricsPlugin
+metadata:
+  name: sglang
+  version: 0.1.0
+spec:
+  exporter:
+    mode: native
+    metrics_path: /metrics
+    required_server_flag: --enable-metrics
+  metric_groups:
+    core:
+      - sglang:num_running_reqs
+      - sglang:num_queue_reqs
+      - sglang:num_requests_total
+      - sglang:prompt_tokens_total
+      - sglang:generation_tokens_total
+      - sglang:time_to_first_token_seconds
+      - sglang:inter_token_latency_seconds
+      - sglang:e2e_request_latency_seconds
+    performance:
+      - sglang:cache_hit_rate
+      - sglang:cached_tokens_total
+      - sglang:token_usage
+      - sglang:gen_throughput
+      - sglang:fwd_occupancy
+      - sglang:kv_transfer_speed_gb_s
+      - sglang:kv_transfer_latency_ms
+      - sglang:queue_time_seconds
+      - sglang:per_stage_req_latency_seconds
+      - sglang:prompt_tokens_histogram
+      - sglang:generation_tokens_histogram
+      - sglang:kv_available_tokens
+      - sglang:kv_used_tokens
+      - sglang:kv_evictable_tokens
+      - sglang:swa_available_tokens
+      - sglang:swa_used_tokens
+      - sglang:mamba_available_tokens
+      - sglang:mamba_used_tokens
+      - sglang:spec_accept_rate
+      - sglang:spec_accept_length
+      - sglang:utilization
+      - sglang:fwd_occupancy
+    detailed:
+      - sglang:num_prefill_bootstrap_queue_reqs
+      - sglang:num_prefill_inflight_queue_reqs
+      - sglang:num_decode_prealloc_queue_reqs
+      - sglang:num_decode_transfer_queue_reqs
+      - sglang:kv_transfer_bootstrap_ms
+      - sglang:kv_transfer_alloc_ms
+      - sglang:num_bootstrap_failed_reqs_total
+      - sglang:num_transfer_failed_reqs_total
+      - sglang:num_prefill_retries_total
+      - sglang:failed_session_recoveries_total
+      - sglang:http_requests_total
+      - sglang:http_responses_total

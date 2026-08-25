@@ -1,0 +1,20 @@
+api_version: monitoring.inference/v1
+kind: MetricsPlugin
+metadata:
+  name: musa_dcgm
+  version: 0.1.0
+spec:
+  exporter:
+    port: 9600
+    metrics_path: /metrics
+    implementation: MTDCGM dcgmi dmon adapter
+  requires:
+    host_package: mt-datacenter-gpu-manager
+    host_service: mt-hostengine
+  fields:
+    203: GPU utilization
+    2002: SM active
+    2003: SM occupancy
+    2005: DRAM active
+    3100: EDC uncorrectable
+    3101: EDC correctable

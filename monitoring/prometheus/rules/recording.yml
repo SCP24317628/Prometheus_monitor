@@ -1,0 +1,38 @@
+groups:
+  - name: accelerator-normalization
+    interval: 15s
+    rules:
+      - record: accelerator_gpu_utilization_ratio
+        expr: (label_replace(musa_dcgm_gpu_utilization_ratio, "accelerator_vendor", "musa", "device", ".*") or on(cluster, environment, node, device) label_replace(musa_gpu_utilization_ratio, "accelerator_vendor", "musa", "device", ".*")) or label_replace(label_replace(DCGM_FI_DEV_GPU_UTIL / 100, "device", "$1", "gpu", "(.*)"), "accelerator_vendor", "nvidia", "gpu", ".*")
+      - record: accelerator_gpu_sm_active_ratio
+        expr: label_replace(musa_dcgm_sm_active_ratio, "accelerator_vendor", "musa", "device", ".*")
+      - record: accelerator_gpu_sm_occupancy_ratio
+        expr: label_replace(musa_dcgm_sm_occupancy_ratio, "accelerator_vendor", "musa", "device", ".*")
+      - record: accelerator_gpu_dram_active_ratio
+        expr: label_replace(musa_dcgm_dram_active_ratio, "accelerator_vendor", "musa", "device", ".*")
+      - record: accelerator_gpu_edc_uncorrectable_total
+        expr: label_replace(musa_dcgm_edc_uncorrectable_total, "accelerator_vendor", "musa", "device", ".*")
+      - record: accelerator_gpu_edc_correctable_total
+        expr: label_replace(musa_dcgm_edc_correctable_total, "accelerator_vendor", "musa", "device", ".*")
+      - record: accelerator_gpu_memory_utilization_ratio
+        expr: label_replace(musa_gpu_memory_utilization_ratio, "accelerator_vendor", "musa", "device", ".*") or label_replace(label_replace(DCGM_FI_DEV_FB_USED / (DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE), "device", "$1", "gpu", "(.*)"), "accelerator_vendor", "nvidia", "gpu", ".*")
+      - record: accelerator_gpu_memory_used_bytes
+        expr: label_replace(musa_gpu_memory_used_bytes, "accelerator_vendor", "musa", "device", ".*") or label_replace(label_replace(DCGM_FI_DEV_FB_USED * 1048576, "device", "$1", "gpu", "(.*)"), "accelerator_vendor", "nvidia", "gpu", ".*")
+      - record: accelerator_gpu_memory_total_bytes
+        expr: label_replace(musa_gpu_memory_total_bytes, "accelerator_vendor", "musa", "device", ".*") or label_replace(label_replace((DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE) * 1048576, "device", "$1", "gpu", "(.*)"), "accelerator_vendor", "nvidia", "gpu", ".*")
+      - record: accelerator_gpu_temperature_celsius
+        expr: label_replace(musa_gpu_temperature_celsius, "accelerator_vendor", "musa", "device", ".*") or label_replace(label_replace(DCGM_FI_DEV_GPU_TEMP, "device", "$1", "gpu", "(.*)"), "accelerator_vendor", "nvidia", "gpu", ".*")
+      - record: accelerator_gpu_power_watts
+        expr: label_replace(musa_gpu_power_watts, "accelerator_vendor", "musa", "device", ".*") or label_replace(label_replace(DCGM_FI_DEV_POWER_USAGE, "device", "$1", "gpu", "(.*)"), "accelerator_vendor", "nvidia", "gpu", ".*")
+
+  - name: sglang-overview
+    interval: 15s
+    rules:
+      - record: inference:request_rate_per_second
+        expr: sum by (cluster, node, role, model, deployment, version, scenario) (rate({__name__="sglang:num_requests_total"}[1m]))
+      - record: inference:prompt_tokens_per_second
+        expr: sum by (cluster, node, role, model, deployment, version, scenario) (rate({__name__="sglang:prompt_tokens_total"}[1m]))
+      - record: inference:generation_tokens_per_second
+        expr: sum by (cluster, node, role, model, deployment, version, scenario) (rate({__name__="sglang:generation_tokens_total"}[1m]))
+      - record: inference:cached_tokens_per_second
+        expr: sum by (cluster, node, role, model, deployment, version, scenario) (rate({__name__="sglang:cached_tokens_total"}[1m]))

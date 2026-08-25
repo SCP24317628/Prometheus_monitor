@@ -1,0 +1,14 @@
+services:
+  center:
+    image: inference-monitor-center:${MONITOR_VERSION:-0.1.4}
+    container_name: inference-monitor-center
+    restart: unless-stopped
+    runtime: runc
+    network_mode: host
+    environment:
+      PROMETHEUS_RETENTION: ${PROMETHEUS_RETENTION:-30d}
+    volumes:
+      - ./generated/prometheus.yml:/etc/inference-monitor/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - ../runtime/prometheus:/prometheus
+      - ../runtime/grafana:/var/lib/grafana

@@ -1,0 +1,26 @@
+ARG BASE_IMAGE=ubuntu:22.04
+FROM ${BASE_IMAGE}
+USER root
+COPY images/center/prometheus.tar.gz /tmp/prometheus.tar.gz
+COPY images/center/grafana.tar.gz /tmp/grafana.tar.gz
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates tar gzip libc6 && rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/prometheus /opt/grafana /opt/inference-monitor/grafana /prometheus /var/lib/grafana/plugins /var/lib/grafana/dashboards && \
+    tar -xzf /tmp/prometheus.tar.gz --strip-components=1 -C /opt/prometheus && \
+    tar -xzf /tmp/grafana.tar.gz --strip-components=1 -C /opt/grafana && rm -f /tmp/*.tar.gz
+COPY monitoring/grafana /opt/inference-monitor/grafana
+COPY images/center/entrypoint.slim.sh /usr/local/bin/inference-monitor-center
+RUN chmod +x /usr/local/bin/inference-monitor-center
+ENV PATH=/opt/prometheus:/opt/grafana/bin:$PATH \
+    GF_SERVER_HTTP_PORT=3000 \
+    GF_AUTH_ANONYMOUS_ENABLED=true \
+    GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer \
+    GF_USERS_ALLOW_SIGN_UP=false \
+    GF_PATHS_PROVISIONING=/opt/inference-monitor/grafana/provisioning \
+    GF_PATHS_PLUGINS=/var/lib/grafana/plugins \
+    GF_ANALYTICS_CHECK_FOR_UPDATES=false \
+    GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES=false \
+    GF_PLUGINS_PREINSTALL_DISABLED=true \
+    GF_PLUGINS_PLUGIN_ADMIN_ENABLED=false \
+    GF_PLUGINS_PUBLIC_KEY_RETRIEVAL_DISABLED=true
+EXPOSE 3000 9090
+ENTRYPOINT ["/usr/local/bin/inference-monitor-center"]

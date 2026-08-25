@@ -1,0 +1,33 @@
+api_version: monitoring.inference/v1
+kind: MetricsPlugin
+metadata:
+  name: musa
+  version: 0.1.0
+spec:
+  exporter:
+    port: 9500
+    metrics_path: /metrics
+    implementation: exporters/musa_exporter.py
+  requires:
+    commands: [mthreads-gmi]
+    platforms: [linux-amd64]
+  metric_groups:
+    core:
+      - musa_exporter_scrape_success
+      - musa_attached_gpus
+      - musa_gpu_info
+      - musa_gpu_utilization_ratio
+      - musa_gpu_memory_used_bytes
+      - musa_gpu_memory_total_bytes
+    performance:
+      - musa_gpu_memory_utilization_ratio
+      - musa_gpu_temperature_celsius
+      - musa_gpu_power_watts
+      - musa_gpu_power_limit_watts
+      - musa_gpu_graphics_clock_hertz
+      - musa_gpu_memory_clock_hertz
+    detailed:
+      - musa_gpu_thermal_slowdown_total
+  normalized_metrics:
+    namespace: accelerator
+    rule_file: monitoring/prometheus/rules/recording.yml

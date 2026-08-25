@@ -1,0 +1,113 @@
+# Prometheus + Grafana 监控产品配置模板
+#
+# 使用方式：
+#   1. 复制本文件为 config/monitoring.yml（如果本文件就是副本，可直接编辑）。
+#   2. 只修改“需要填写”的字段：public_host、节点 address、插件开关和服务 port。
+#   3. 在监控中心执行：
+#        python monitorctl.py --config config/monitoring.yml install --center
+#   4. 在每个被监控节点执行：
+#        python monitorctl.py --config config/monitoring.yml install --node
+#   5. 查看最终 Grafana 地址：
+#        python monitorctl.py --config config/monitoring.yml urls
+#
+# 约束：
+#   - address 必须填写 IPv4/IPv6 地址；不要填写 hostname 或带协议头的 URL。
+#   - service.port 是推理服务已经暴露的 Prometheus metrics 端口，本产品不会启动推理服务。
+#   - Prometheus 中心必须能访问所有节点 exporter 和 service 的 /metrics 端口。
+#   - 用户浏览器必须能访问 public_host:grafana_port。
+#   - 网络路径由用户/网络平台负责；本产品不填写、不管理 SSH、ProxyJump、跳板机、VPN 或凭据。
+#   - 复杂网络请先打通 Prometheus 到这些 endpoint 的访问，或在节点本地手动安装采集器。
+
+schema_version: 1
+
+platform:
+  # 集群在 Prometheus/Grafana 中的逻辑名称，可自定义。
+  cluster: inference-cluster-01
+  # 环境标签，例如 production、staging、test。
+  environment: production
+
+  # 【需要填写】用户浏览器访问 Grafana 的 IP 地址。
+  # 示例使用RFC 5737保留地址，必须替换为实际监控中心IP。
+  public_host: 192.0.2.10
+
+  # 一般不需要修改，只有端口被占用时才调整。
+  grafana_port: 3000
+  prometheus_port: 9090
+
+  # 默认每 15 秒采集一次，短时性能分析可改为 5s。
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  # Prometheus 本地保存周期。
+  retention: 30d
+
+nodes:
+  # 每台需要采集 CPU/内存/网卡/GPU 的机器配置一个节点。
+  - name: node-01
+    # 【需要填写】节点管理网 IPv4/IPv6 地址。
+    address: 192.0.2.10
+    # 可选标签：musa、nvidia 或 other；没有 GPU 可删除该行。
+    accelerator_vendor: musa
+    plugins:
+      # CPU、内存、文件系统、普通网卡和 RDMA/InfiniBand。
+      node:
+        enabled: true
+        # core 资源开销最低；performance 包含 RDMA 等性能指标。
+        metrics_group: performance
+        port: 9100
+      # MUSA GPU、显存、温度、功耗。NVIDIA 节点改用对应 NVIDIA 插件。
+      musa:
+        enabled: true
+        metrics_group: performance
+        port: 9500
+      # MTDCGM默认关闭；只有确认宿主已安装MTDCGM并明确开启时才采集。
+      musa_dcgm:
+        enabled: false
+        metrics_group: performance
+        port: 9600
+
+  # 复制上面的 node 块，填写其他节点；没有的插件设 enabled: false。
+  - name: node-02
+    address: 192.0.2.11
+    accelerator_vendor: musa
+    plugins:
+      node:
+        enabled: true
+        metrics_group: performance
+        port: 9100
+      musa:
+        enabled: true
+        metrics_group: performance
+        port: 9500
+      musa_dcgm:
+        enabled: false
+        metrics_group: performance
+        port: 9600
+
+services:
+  # 这里登记“已经运行”的推理服务 metrics 端口。
+  # 产品只负责 Prometheus 抓取和 Grafana 展示，不负责启动/停止该服务。
+  - name: inference-instance-01
+    # 必须对应上面 nodes 中的 name。
+    node: node-01
+    # 可填写 inference、prefill、decode、router 等角色。
+    role: inference
+    # 【需要填写】推理服务暴露 Prometheus metrics 的端口。
+    port: 30000
+    # 通常为 /metrics；如果服务使用其他路径，在这里修改。
+    metrics_path: /metrics
+    labels:
+      # 这些标签用于 Grafana 筛选和版本/场景基线对比。
+      model: replace-me
+      deployment: replace-me
+      version: replace-me
+      scenario: production
+
+  # 多个推理实例继续复制 service 块；不需要为每个服务额外创建 exporter。
+
+# NVIDIA节点配置示例（替换对应MUSA节点，不要与MUSA插件同时开启）：
+# - name: nvidia-node-01
+#   address: 192.0.2.20
+#   accelerator_vendor: nvidia
+#   plugins:
+#     node: {enabled: true, metrics_group: performance, port: 9100}
+#     nvidia_dcgm: {enabled: false, metrics_group: performance, port: 9400}

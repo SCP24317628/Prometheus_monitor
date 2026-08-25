@@ -1,0 +1,19 @@
+services:
+  node:
+    image: inference-monitor-node-musa:${MONITOR_VERSION:-0.1.4}
+    container_name: inference-monitor-node
+    restart: unless-stopped
+    runtime: mthreads
+    privileged: true
+    network_mode: host
+    pid: host
+    env_file:
+      - ${NODE_ENV:-./generated/nodes/node-01.env}
+    environment:
+      MTHREADS_VISIBLE_DEVICES: all
+      MTHREADS_DRIVER_CAPABILITIES: all
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host/root:ro,rslave
+      - /run/udev/data:/run/udev/data:ro
