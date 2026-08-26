@@ -14,10 +14,20 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertEqual(dashboard["uid"], "inference-system-overview")
         self.assertGreaterEqual(len(dashboard["panels"]), 40)
         titles = {panel.get("title", "") for panel in dashboard["panels"]}
-        self.assertIn("SGLang Performance Summary", titles)
-        self.assertIn("Latency Comparison: TTFT and TPOT", titles)
-        self.assertIn("KV Cache and PD Transfer", titles)
+        self.assertNotIn("SGLang Performance Summary", titles)
+        self.assertIn("SGLang Concurrency & Queue", titles)
+        self.assertIn("Latency: TTFT & E2E", titles)
+        self.assertIn("KV Cache & PD Transfer", titles)
+        self.assertIn("GPU, CPU & Memory", titles)
+        self.assertIn("Network: RDMA First", titles)
         self.assertIn("GPU Utilization (MTDCGM)", titles)
+
+        stat_titles = {p.get("title") for p in dashboard["panels"] if p.get("type") == "stat"}
+        self.assertEqual(
+            stat_titles,
+            {"Running Requests", "Prefill Inflight Requests", "Queued Requests", "Generation Throughput",
+             "TTFT Mean", "TTFT P90", "TTFT P99", "E2E Mean", "E2E P90", "E2E P99"},
+        )
 
 
 if __name__ == "__main__":
