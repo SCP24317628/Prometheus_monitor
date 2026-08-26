@@ -10,62 +10,180 @@
   "liveNow": false,
   "panels": [
     {
+      "id": 100,
+      "type": "row",
+      "title": "SGLang Performance Summary",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 101,
+      "type": "stat",
+      "title": "Running Requests",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          }
+          "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 0,
-        "y": 0
-      },
-      "id": 1,
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
+        "colorMode": "value",
+        "graphMode": "area",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        },
-        "textMode": "auto"
+        }
       },
       "targets": [
         {
-          "expr": "sum(up{cluster=~\"$cluster\"})",
-          "legendFormat": "targets",
-          "refId": "A"
+          "refId": "A",
+          "expr": "sum({__name__=\"sglang:num_running_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})"
         }
-      ],
-      "title": "Targets Up",
-      "type": "stat"
+      ]
     },
     {
+      "id": 102,
+      "type": "stat",
+      "title": "Prefill Inflight Requests",
+      "gridPos": {
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum({__name__=\"sglang:num_prefill_inflight_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "type": "stat",
+      "title": "Queued Requests",
+      "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum({__name__=\"sglang:num_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "type": "stat",
+      "title": "Active HTTP Requests",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum({__name__=\"sglang:http_requests_active\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})"
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "type": "stat",
+      "title": "Request Rate",
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -76,13 +194,6 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 4,
-        "y": 0
-      },
-      "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -92,77 +203,35 @@
           ],
           "fields": "",
           "values": false
-        },
-        "textMode": "auto"
+        }
       },
       "targets": [
         {
-          "expr": "sum(inference:request_rate_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
-          "refId": "A"
+          "refId": "A",
+          "expr": "sum(rate({__name__=\"sglang:num_requests_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
         }
-      ],
-      "title": "Request Rate",
-      "type": "stat"
+      ]
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "Tops"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 9,
-        "y": 0
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "expr": "sum(inference:generation_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
-          "refId": "A"
-        }
-      ],
+      "id": 106,
+      "type": "stat",
       "title": "Generation Tokens/s",
-      "type": "stat"
-    },
-    {
+      "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "max": 1,
-          "min": 0,
-          "unit": "percentunit"
+          "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 14,
-        "y": 0
-      },
-      "id": 4,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -172,38 +241,48 @@
           ],
           "fields": "",
           "values": false
-        },
-        "textMode": "auto"
+        }
       },
       "targets": [
         {
-          "expr": "avg(accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"})",
-          "refId": "A"
+          "refId": "A",
+          "expr": "sum(rate({__name__=\"sglang:generation_tokens_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
         }
-      ],
-      "title": "Average GPU Utilization",
-      "type": "stat"
+      ]
     },
     {
+      "id": 110,
+      "type": "row",
+      "title": "Latency Comparison: TTFT and TPOT",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 111,
+      "type": "stat",
+      "title": "TTFT Mean",
+      "gridPos": {
+        "x": 0,
+        "y": 2,
+        "w": 4,
+        "h": 4
+      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "max": 1,
-          "min": 0,
-          "unit": "percentunit"
+          "unit": "s"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 19,
-        "y": 0
-      },
-      "id": 5,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -213,17 +292,204 @@
           ],
           "fields": "",
           "values": false
-        },
-        "textMode": "auto"
+        }
       },
       "targets": [
         {
-          "expr": "avg(accelerator_gpu_memory_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"})",
-          "refId": "A"
+          "refId": "A",
+          "expr": "sum(rate({__name__=\"sglang:time_to_first_token_seconds_sum\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])) / sum(rate({__name__=\"sglang:time_to_first_token_seconds_count\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
         }
-      ],
-      "title": "Average GPU Memory",
-      "type": "stat"
+      ]
+    },
+    {
+      "id": 112,
+      "type": "stat",
+      "title": "TTFT P90",
+      "gridPos": {
+        "x": 4,
+        "y": 2,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.90, sum by (le) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))"
+        }
+      ]
+    },
+    {
+      "id": 113,
+      "type": "stat",
+      "title": "TTFT P99",
+      "gridPos": {
+        "x": 8,
+        "y": 2,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))"
+        }
+      ]
+    },
+    {
+      "id": 114,
+      "type": "stat",
+      "title": "TPOT Mean (ITL)",
+      "gridPos": {
+        "x": 12,
+        "y": 2,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate({__name__=\"sglang:inter_token_latency_seconds_sum\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])) / sum(rate({__name__=\"sglang:inter_token_latency_seconds_count\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 115,
+      "type": "stat",
+      "title": "TPOT P90 (ITL)",
+      "gridPos": {
+        "x": 16,
+        "y": 2,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.90, sum by (le) (rate({__name__=\"sglang:inter_token_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))"
+        }
+      ]
+    },
+    {
+      "id": 116,
+      "type": "stat",
+      "title": "TPOT P99 (ITL)",
+      "gridPos": {
+        "x": 20,
+        "y": 2,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate({__name__=\"sglang:inter_token_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))"
+        }
+      ]
     },
     {
       "datasource": {
@@ -243,10 +509,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 0,
-        "y": 4
+        "y": 10,
+        "w": 12,
+        "h": 8
       },
       "id": 6,
       "options": {
@@ -291,10 +557,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 12,
-        "y": 4
+        "y": 10,
+        "w": 12,
+        "h": 8
       },
       "id": 7,
       "options": {
@@ -333,462 +599,12 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 12
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.50, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p50",
-          "refId": "A"
-        },
-        {
-          "expr": "histogram_quantile(0.95, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p95",
-          "refId": "B"
-        }
-      ],
-      "title": "Time to First Token",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "max": 1,
-          "min": 0,
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "max by (node,role) (sglang:cache_hit_rate{cluster=~\"$cluster\",node=~\"$node\"})",
-          "legendFormat": "{{node}} {{role}}",
-          "refId": "A"
-        }
-      ],
-      "title": "SGLang Cache Hit Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "max": 1,
-          "min": 0,
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 20
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"}",
-          "legendFormat": "{{node}} GPU{{device}}",
-          "refId": "A"
-        }
-      ],
-      "title": "GPU Utilization (MTDCGM)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 20
-      },
-      "id": 11,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "accelerator_gpu_memory_used_bytes{cluster=~\"$cluster\",node=~\"$node\"}",
-          "legendFormat": "{{node}} GPU{{device}}",
-          "refId": "A"
-        }
-      ],
-      "title": "GPU Memory Used",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 28
-      },
-      "id": 12,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum by (node,device) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))",
-          "legendFormat": "{{node}} {{device}} RX",
-          "refId": "A"
-        },
-        {
-          "expr": "sum by (node,device) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))",
-          "legendFormat": "{{node}} {{device}} TX",
-          "refId": "B"
-        }
-      ],
-      "title": "Ethernet Throughput",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 28
-      },
-      "id": 13,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum by (node,device,port) (rate(node_infiniband_port_data_received_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))",
-          "legendFormat": "{{node}} {{device}}/{{port}} RX",
-          "refId": "A"
-        },
-        {
-          "expr": "sum by (node,device,port) (rate(node_infiniband_port_data_transmitted_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))",
-          "legendFormat": "{{node}} {{device}}/{{port}} TX",
-          "refId": "B"
-        }
-      ],
-      "title": "RDMA Throughput",
-      "type": "timeseries"
-    },
-    {
-      "id": 14,
-      "type": "row",
-      "title": "Requests, Queue and HTTP",
-      "gridPos": {
-        "x": 0,
-        "y": 37,
-        "w": 24,
-        "h": 1
-      },
-      "collapsed": false,
-      "panels": []
-    },
-    {
-      "id": 15,
-      "type": "stat",
-      "title": "Active HTTP Requests",
-      "gridPos": {
-        "x": 12,
-        "y": 38,
-        "w": 4,
-        "h": 4
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "sum({__name__=\"sglang:http_requests_active\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})"
-        }
-      ]
-    },
-    {
-      "id": 16,
-      "type": "stat",
-      "title": "Aborted Requests/s",
-      "gridPos": {
-        "x": 16,
-        "y": 38,
-        "w": 4,
-        "h": 4
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "sum(rate({__name__=\"sglang:num_aborted_requests_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
-        }
-      ]
-    },
-    {
-      "id": 17,
-      "type": "stat",
-      "title": "Retracted Requests/s",
-      "gridPos": {
-        "x": 20,
-        "y": 38,
-        "w": 4,
-        "h": 4
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "sum(rate({__name__=\"sglang:num_retracted_requests_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
-        }
-      ]
-    },
-    {
-      "id": 18,
-      "type": "timeseries",
-      "title": "HTTP Responses by Status",
-      "gridPos": {
-        "x": 12,
-        "y": 42,
-        "w": 12,
-        "h": 8
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "sum by (node,role,status) (rate({__name__=\"sglang:http_responses_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[1m]))",
-          "legendFormat": "{{node}} {{role}} {{status}}"
-        }
-      ]
-    },
-    {
-      "id": 19,
-      "type": "row",
-      "title": "Token Throughput and Request Length",
-      "gridPos": {
-        "x": 0,
-        "y": 50,
-        "w": 24,
-        "h": 1
-      },
-      "collapsed": false,
-      "panels": []
-    },
-    {
       "id": 20,
       "type": "timeseries",
       "title": "Generation Throughput and Realtime Tokens",
       "gridPos": {
-        "x": 12,
-        "y": 51,
+        "x": 0,
+        "y": 18,
         "w": 12,
         "h": 8
       },
@@ -830,106 +646,12 @@
       ]
     },
     {
-      "id": 21,
-      "type": "timeseries",
-      "title": "Prompt Length p50 / p95 / p99",
-      "gridPos": {
-        "x": 0,
-        "y": 59,
-        "w": 12,
-        "h": 8
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:prompt_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p50"
-        },
-        {
-          "refId": "B",
-          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:prompt_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p95"
-        },
-        {
-          "refId": "C",
-          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:prompt_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p99"
-        }
-      ]
-    },
-    {
-      "id": 22,
-      "type": "timeseries",
-      "title": "Generation Length p50 / p95 / p99",
-      "gridPos": {
-        "x": 12,
-        "y": 59,
-        "w": 12,
-        "h": 8
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:generation_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p50"
-        },
-        {
-          "refId": "B",
-          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:generation_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p95"
-        },
-        {
-          "refId": "C",
-          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:generation_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p99"
-        }
-      ]
-    },
-    {
-      "id": 23,
+      "id": 120,
       "type": "row",
-      "title": "Latency",
+      "title": "Latency Detail",
       "gridPos": {
         "x": 0,
-        "y": 67,
+        "y": 18,
         "w": 24,
         "h": 1
       },
@@ -937,15 +659,6 @@
       "panels": []
     },
     {
-      "id": 24,
-      "type": "timeseries",
-      "title": "Inter-token Latency p50 / p95",
-      "gridPos": {
-        "x": 8,
-        "y": 68,
-        "w": 8,
-        "h": 8
-      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -956,82 +669,50 @@
         },
         "overrides": []
       },
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:inter_token_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p50"
-        },
-        {
-          "refId": "B",
-          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:inter_token_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p95"
-        }
-      ]
-    },
-    {
-      "id": 25,
-      "type": "timeseries",
-      "title": "E2E Latency p50 / p95 / p99",
       "gridPos": {
-        "x": 16,
-        "y": 68,
-        "w": 8,
+        "x": 0,
+        "y": 19,
+        "w": 12,
         "h": 8
       },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s"
-        },
-        "overrides": []
-      },
+      "id": 8,
       "options": {
         "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
       },
       "targets": [
         {
-          "refId": "A",
-          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p50"
+          "expr": "histogram_quantile(0.50, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50",
+          "refId": "A"
         },
         {
-          "refId": "B",
-          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p95"
-        },
-        {
-          "refId": "C",
-          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} p99"
+          "expr": "histogram_quantile(0.95, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95",
+          "refId": "B"
         }
-      ]
+      ],
+      "title": "Time to First Token",
+      "type": "timeseries"
     },
     {
       "id": 26,
       "type": "timeseries",
       "title": "Queue Time p50 / p95",
       "gridPos": {
-        "x": 0,
-        "y": 76,
+        "x": 12,
+        "y": 19,
         "w": 12,
         "h": 8
       },
@@ -1072,8 +753,8 @@
       "type": "timeseries",
       "title": "Per-stage Request Latency p95",
       "gridPos": {
-        "x": 12,
-        "y": 76,
+        "x": 0,
+        "y": 27,
         "w": 12,
         "h": 8
       },
@@ -1105,12 +786,104 @@
       ]
     },
     {
-      "id": 28,
-      "type": "row",
-      "title": "KV, SWA and Mamba Cache Pools",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 27,
+        "w": 12,
+        "h": 8
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "max by (node,role) (sglang:cache_hit_rate{cluster=~\"$cluster\",node=~\"$node\"})",
+          "legendFormat": "{{node}} {{role}}",
+          "refId": "A"
+        }
+      ],
+      "title": "SGLang Cache Hit Rate",
+      "type": "timeseries"
+    },
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "E2E Latency p50 / p95 / p99",
       "gridPos": {
         "x": 0,
-        "y": 84,
+        "y": 35,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p99"
+        }
+      ]
+    },
+    {
+      "id": 130,
+      "type": "row",
+      "title": "KV Cache and PD Transfer",
+      "gridPos": {
+        "x": 0,
+        "y": 35,
         "w": 24,
         "h": 1
       },
@@ -1123,7 +896,7 @@
       "title": "Cache and Token Usage",
       "gridPos": {
         "x": 0,
-        "y": 85,
+        "y": 36,
         "w": 12,
         "h": 8
       },
@@ -1183,7 +956,7 @@
       "title": "KV Tokens Available / Used / Evictable",
       "gridPos": {
         "x": 12,
-        "y": 85,
+        "y": 36,
         "w": 12,
         "h": 8
       },
@@ -1230,7 +1003,7 @@
       "title": "SWA Pool Tokens",
       "gridPos": {
         "x": 0,
-        "y": 93,
+        "y": 44,
         "w": 12,
         "h": 8
       },
@@ -1277,7 +1050,7 @@
       "title": "Mamba Pool Tokens",
       "gridPos": {
         "x": 12,
-        "y": 93,
+        "y": 44,
         "w": 12,
         "h": 8
       },
@@ -1319,25 +1092,12 @@
       ]
     },
     {
-      "id": 33,
-      "type": "row",
-      "title": "PD Disaggregation and KV Transfer",
-      "gridPos": {
-        "x": 0,
-        "y": 101,
-        "w": 24,
-        "h": 1
-      },
-      "collapsed": false,
-      "panels": []
-    },
-    {
       "id": 34,
       "type": "timeseries",
       "title": "PD Queue Depths",
       "gridPos": {
         "x": 0,
-        "y": 102,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -1388,7 +1148,7 @@
       "title": "KV Transfer Speed p50 / p95",
       "gridPos": {
         "x": 12,
-        "y": 102,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -1430,8 +1190,8 @@
       "title": "KV Transfer Latency p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 110,
-        "w": 8,
+        "y": 60,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -1471,9 +1231,9 @@
       "type": "timeseries",
       "title": "Bootstrap / Allocation Latency p95",
       "gridPos": {
-        "x": 8,
-        "y": 110,
-        "w": 8,
+        "x": 12,
+        "y": 60,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -1513,9 +1273,9 @@
       "type": "timeseries",
       "title": "PD Failures and Retries/s",
       "gridPos": {
-        "x": 16,
-        "y": 110,
-        "w": 8,
+        "x": 0,
+        "y": 68,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -1561,12 +1321,12 @@
       ]
     },
     {
-      "id": 39,
+      "id": 140,
       "type": "row",
-      "title": "Scheduler, Speculative Decode and Capacity",
+      "title": "Accelerator and Network",
       "gridPos": {
         "x": 0,
-        "y": 118,
+        "y": 68,
         "w": 24,
         "h": 1
       },
@@ -1574,13 +1334,197 @@
       "panels": []
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 69,
+        "w": 12,
+        "h": 8
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"}",
+          "legendFormat": "{{node}} GPU{{device}}",
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Utilization (MTDCGM)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 69,
+        "w": 12,
+        "h": 8
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "accelerator_gpu_memory_used_bytes{cluster=~\"$cluster\",node=~\"$node\"}",
+          "legendFormat": "{{node}} GPU{{device}}",
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Memory Used",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 77,
+        "w": 12,
+        "h": 8
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (node,device,port) (rate(node_infiniband_port_data_received_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))",
+          "legendFormat": "{{node}} {{device}}/{{port}} RX",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (node,device,port) (rate(node_infiniband_port_data_transmitted_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))",
+          "legendFormat": "{{node}} {{device}}/{{port}} TX",
+          "refId": "B"
+        }
+      ],
+      "title": "RDMA Throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 77,
+        "w": 12,
+        "h": 8
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum by (node,device) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))",
+          "legendFormat": "{{node}} {{device}} RX",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (node,device) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))",
+          "legendFormat": "{{node}} {{device}} TX",
+          "refId": "B"
+        }
+      ],
+      "title": "Ethernet Throughput",
+      "type": "timeseries"
+    },
+    {
       "id": 40,
       "type": "timeseries",
       "title": "Scheduler Utilization / Forward Occupancy",
       "gridPos": {
         "x": 0,
-        "y": 119,
-        "w": 8,
+        "y": 85,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -1628,9 +1572,9 @@
       "type": "timeseries",
       "title": "Speculative Decode Acceptance",
       "gridPos": {
-        "x": 8,
-        "y": 119,
-        "w": 8,
+        "x": 12,
+        "y": 85,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -1673,9 +1617,9 @@
       "type": "timeseries",
       "title": "Capacity and Startup Memory",
       "gridPos": {
-        "x": 16,
-        "y": 119,
-        "w": 8,
+        "x": 0,
+        "y": 93,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -1802,5 +1746,5 @@
   "uid": "inference-system-overview",
   "version": 1,
   "weekStart": "",
-  "description": "Unified cluster, SGLang, accelerator, CPU, memory, Ethernet and RDMA monitoring."
+  "description": "Unified SGLang performance, TTFT/TPOT latency, accelerator, CPU, memory, RDMA and Ethernet monitoring."
 }
