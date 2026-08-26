@@ -20,7 +20,7 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertIn("KV Cache & PD Transfer", titles)
         self.assertIn("GPU, CPU & Memory", titles)
         self.assertIn("Network: RDMA First", titles)
-        self.assertIn("GPU Utilization (MTDCGM)", titles)
+        self.assertIn("GPU Utilization (Unified)", titles)
 
         stat_titles = {p.get("title") for p in dashboard["panels"] if p.get("type") == "stat"}
         self.assertEqual(

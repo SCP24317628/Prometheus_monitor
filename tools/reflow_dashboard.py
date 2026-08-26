@@ -93,7 +93,10 @@ def reflow(path: pathlib.Path) -> dict:
     for title in ("GPU Utilization (MTDCGM)", "GPU Memory Used", "Scheduler Utilization / Forward Occupancy",
                   "Speculative Decode Acceptance", "Capacity and Startup Memory"):
         if title in by_title:
-            panels.append(by_title[title])
+            panel = by_title[title]
+            if title == "GPU Utilization (MTDCGM)":
+                panel["title"] = "GPU Utilization (Unified)"
+            panels.append(panel)
     panels.extend([
         timeseries(43, "CPU Utilization", [target(f"100 - (avg by (node) (rate(node_cpu_seconds_total{{mode=\"idle\",{NODE_FILTER}}}[5m])) * 100)", legend="{{node}}")]),
         timeseries(44, "Memory Used", [target(f"node_memory_MemTotal_bytes{{{NODE_FILTER}}} - node_memory_MemAvailable_bytes{{{NODE_FILTER}}}", legend="{{node}}")]),
