@@ -2,10 +2,11 @@
 
 ## Goal
 
-Provide a portable Prometheus/Grafana platform that shows SGLang request and
-token behavior beside CPU, memory, Ethernet, RDMA and accelerator load across
-multiple nodes. Operators must be able to move the stack by changing inventory
-instead of editing dashboards or hard-coded addresses.
+Provide a portable Prometheus/Grafana platform that shows SGLang Prefill and
+Decode request/token behavior beside CPU, memory, Ethernet, RDMA and
+accelerator load across multiple nodes. Operators must be able to move the
+stack by changing inventory instead of editing dashboards or hard-coded
+addresses. The Router is not part of the default monitoring chain.
 
 ## V1 behavior
 
@@ -18,7 +19,14 @@ instead of editing dashboards or hard-coded addresses.
   may implement Push without changing labels or dashboards, but that adapter is
   outside this product's V1 implementation.
 - `config/monitoring.yml` is the authoritative inventory. It selects
-  plugins, metric groups, node addresses and SGLang endpoints.
+  plugins, metric groups, node addresses and SGLang Prefill/Decode endpoints.
+- SGLang service ports and roles are explicit configuration inputs. V1 does not
+  automatically adopt arbitrary open ports. A future discovery mode may report
+  candidates, but a user must confirm model, deployment and Prefill/Decode role
+  before a target is added.
+- Router metrics are optional integration data (health, ingress and routing
+  errors when the Router exposes them); they are not required for worker
+  latency, queue, KV, GPU or RDMA metrics and are not provisioned by default.
 - Native vendor metrics are preserved. Recording rules create the stable
   `accelerator_*` interface used by cross-hardware dashboards.
 - Stable correlation labels are `cluster`, `environment`, `node`, `role`,
@@ -46,13 +54,27 @@ validation before a binary image is marked generally available.
 - Grafana provisions its datasource and dashboards without manual UI steps.
 - The config renderer, exporter tests, `promtool`, and dashboard JSON validation pass.
 
+## Logs and Router boundary
+
+The Prometheus product consumes SGLang `/metrics`; it does not parse SGLang or
+Router logs. Request IDs, bootstrap details, KV-transfer diagnostics and
+failure explanations require a separate log collector (for example
+Promtail/Vector plus Loki) with explicit container/path and role metadata.
+Port discovery cannot replace log collection.
+
+Router scraping is an optional target. Removing the Router target does not stop
+the Router process; it only prevents Router-level ingress metrics from being
+stored. Prefill and Decode targets remain the source of worker performance and
+latency metrics.
+
 ## Out of scope for this iteration
 
 - SSH, ProxyJump, jump-host orchestration, credential management and network
   reachability setup. Users must provide the required network path or manually
   deploy generated node artifacts.
 - Public-network exposure, authentication and multi-tenant RBAC
-- Logs and distributed traces
+- SGLang/Router log collection and distributed traces (reserved for a separate
+  logging plugin)
 - Switch telemetry
 - Long-term remote storage
 - Automatic bottleneck diagnosis

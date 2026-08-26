@@ -89,7 +89,7 @@ services:
   - name: inference-instance-01
     # 必须对应上面 nodes 中的 name。
     node: node-01
-    # 可填写 inference、prefill、decode、router 等角色。
+    # 可填写 inference、prefill 或 decode；Router 不属于默认监控链路。
     role: inference
     # 【需要填写】推理服务暴露 Prometheus metrics 的端口。
     port: 30000
