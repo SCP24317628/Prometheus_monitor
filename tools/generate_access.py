@@ -9,7 +9,7 @@ def main() -> int:
     parser.add_argument("config", type=pathlib.Path); parser.add_argument("--output", type=pathlib.Path, required=True)
     args = parser.parse_args(); doc = yaml.safe_load(args.config.read_text(encoding="utf-8")); p = doc["platform"]
     host = p["public_host"]; gp = int(p.get("grafana_port", 3000)); pp = int(p.get("prometheus_port", 9090)); uid = "inference-system-overview"
-    access = {"grafana_home": f"http://{host}:{gp}/", "grafana_dashboard": f"http://{host}:{gp}/d/{uid}/inference-system-overview", "sglang_dashboard": f"http://{host}:{gp}/d/sglang-detailed-metrics/sglang-detailed-metrics", "prometheus": f"http://{host}:{pp}/", "prometheus_targets": f"http://{host}:{pp}/targets", "cluster": p["cluster"], "environment": p["environment"], "dashboard_uid": uid, "services": []}
+    access = {"grafana_home": f"http://{host}:{gp}/", "grafana_dashboard": f"http://{host}:{gp}/d/{uid}/inference-system-overview", "prometheus": f"http://{host}:{pp}/", "prometheus_targets": f"http://{host}:{pp}/targets", "cluster": p["cluster"], "environment": p["environment"], "dashboard_uid": uid, "services": []}
     nodes = {n["name"]: n for n in doc.get("nodes", [])}
     for service in doc.get("services", []):
         node = nodes[service["node"]]; endpoint = f"http://{node['address']}:{service['port']}"

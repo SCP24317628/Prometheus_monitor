@@ -7,5 +7,5 @@ class AccessGeneratorTest(unittest.TestCase):
             subprocess.run([sys.executable, 'tools/generate_access.py', 'config/monitoring.yml', '--output', str(out)], cwd=ROOT, check=True, capture_output=True, text=True)
             data = json.loads(out.read_text(encoding='utf-8'))
         self.assertEqual(data['grafana_dashboard'], 'http://192.0.2.10:3000/d/inference-system-overview/inference-system-overview')
-        self.assertEqual(data['sglang_dashboard'], 'http://192.0.2.10:3000/d/sglang-detailed-metrics/sglang-detailed-metrics')
+        self.assertNotIn('sglang_dashboard', data)
         self.assertEqual(len(data['services']), 1)

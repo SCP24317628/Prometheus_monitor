@@ -1,5 +1,7 @@
 {
-  "annotations": {"list": []},
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -8,166 +10,1797 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []},
-      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "sum(up{cluster=~\"$cluster\"})", "legendFormat": "targets", "refId": "A"}],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(up{cluster=~\"$cluster\"})",
+          "legendFormat": "targets",
+          "refId": "A"
+        }
+      ],
       "title": "Targets Up",
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
-      "gridPos": {"h": 4, "w": 5, "x": 4, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 4,
+        "y": 0
+      },
       "id": 2,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "sum(inference:request_rate_per_second{cluster=~\"$cluster\",node=~\"$node\"})", "refId": "A"}],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(inference:request_rate_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
+          "refId": "A"
+        }
+      ],
       "title": "Request Rate",
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "Tops"}, "overrides": []},
-      "gridPos": {"h": 4, "w": 5, "x": 9, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Tops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 9,
+        "y": 0
+      },
       "id": 3,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "sum(inference:generation_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})", "refId": "A"}],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(inference:generation_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
+          "refId": "A"
+        }
+      ],
       "title": "Generation Tokens/s",
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"max": 1, "min": 0, "unit": "percentunit"}, "overrides": []},
-      "gridPos": {"h": 4, "w": 5, "x": 14, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 0
+      },
       "id": 4,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "avg(accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"})", "refId": "A"}],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "avg(accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"})",
+          "refId": "A"
+        }
+      ],
       "title": "Average GPU Utilization",
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"max": 1, "min": 0, "unit": "percentunit"}, "overrides": []},
-      "gridPos": {"h": 4, "w": 5, "x": 19, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 0
+      },
       "id": 5,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "avg(accelerator_gpu_memory_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"})", "refId": "A"}],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "avg(accelerator_gpu_memory_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"})",
+          "refId": "A"
+        }
+      ],
       "title": "Average GPU Memory",
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"custom": {"drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "linear", "lineWidth": 1, "showPoints": "never"}}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "showPoints": "never"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
       "id": 6,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
       "targets": [
-        {"expr": "sum by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})", "legendFormat": "{{node}} {{role}} running", "refId": "A"},
-        {"expr": "sum by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})", "legendFormat": "{{node}} {{role}} queued", "refId": "B"}
+        {
+          "expr": "sum by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} running",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} queued",
+          "refId": "B"
+        }
       ],
       "title": "SGLang Running and Queued Requests",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "Tops"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Tops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
       "id": 7,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
       "targets": [
-        {"expr": "sum by (node,role) (inference:prompt_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})", "legendFormat": "{{node}} {{role}} prompt", "refId": "A"},
-        {"expr": "sum by (node,role) (inference:generation_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})", "legendFormat": "{{node}} {{role}} generation", "refId": "B"},
-        {"expr": "sum by (node,role) (inference:cached_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})", "legendFormat": "{{node}} {{role}} cached", "refId": "C"}
+        {
+          "expr": "sum by (node,role) (inference:prompt_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
+          "legendFormat": "{{node}} {{role}} prompt",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (node,role) (inference:generation_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
+          "legendFormat": "{{node}} {{role}} generation",
+          "refId": "B"
+        },
+        {
+          "expr": "sum by (node,role) (inference:cached_tokens_per_second{cluster=~\"$cluster\",node=~\"$node\"})",
+          "legendFormat": "{{node}} {{role}} cached",
+          "refId": "C"
+        }
       ],
       "title": "Token Throughput",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
       "id": 8,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
       "targets": [
-        {"expr": "histogram_quantile(0.50, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))", "legendFormat": "{{node}} {{role}} p50", "refId": "A"},
-        {"expr": "histogram_quantile(0.95, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))", "legendFormat": "{{node}} {{role}} p95", "refId": "B"}
+        {
+          "expr": "histogram_quantile(0.50, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le,node,role) (rate({__name__=\"sglang:time_to_first_token_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95",
+          "refId": "B"
+        }
       ],
       "title": "Time to First Token",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"max": 1, "min": 0, "unit": "percentunit"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
       "id": 9,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "max by (node,role) (sglang:cache_hit_rate{cluster=~\"$cluster\",node=~\"$node\"})", "legendFormat": "{{node}} {{role}}", "refId": "A"}],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "max by (node,role) (sglang:cache_hit_rate{cluster=~\"$cluster\",node=~\"$node\"})",
+          "legendFormat": "{{node}} {{role}}",
+          "refId": "A"
+        }
+      ],
       "title": "SGLang Cache Hit Rate",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"max": 1, "min": 0, "unit": "percentunit"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
       "id": 10,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"}", "legendFormat": "{{node}} GPU{{device}}", "refId": "A"}],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "accelerator_gpu_utilization_ratio{cluster=~\"$cluster\",node=~\"$node\"}",
+          "legendFormat": "{{node}} GPU{{device}}",
+          "refId": "A"
+        }
+      ],
       "title": "GPU Utilization (MTDCGM)",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
       "id": 11,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"expr": "accelerator_gpu_memory_used_bytes{cluster=~\"$cluster\",node=~\"$node\"}", "legendFormat": "{{node}} GPU{{device}}", "refId": "A"}],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "accelerator_gpu_memory_used_bytes{cluster=~\"$cluster\",node=~\"$node\"}",
+          "legendFormat": "{{node}} GPU{{device}}",
+          "refId": "A"
+        }
+      ],
       "title": "GPU Memory Used",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "Bps"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 28},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
       "id": 12,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
       "targets": [
-        {"expr": "sum by (node,device) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))", "legendFormat": "{{node}} {{device}} RX", "refId": "A"},
-        {"expr": "sum by (node,device) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))", "legendFormat": "{{node}} {{device}} TX", "refId": "B"}
+        {
+          "expr": "sum by (node,device) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))",
+          "legendFormat": "{{node}} {{device}} RX",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (node,device) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\",node=~\"$node\",device!~\"lo|veth.*|docker.*\"}[1m]))",
+          "legendFormat": "{{node}} {{device}} TX",
+          "refId": "B"
+        }
       ],
       "title": "Ethernet Throughput",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "Bps"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 28},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
       "id": 13,
-      "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
       "targets": [
-        {"expr": "sum by (node,device,port) (rate(node_infiniband_port_data_received_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))", "legendFormat": "{{node}} {{device}}/{{port}} RX", "refId": "A"},
-        {"expr": "sum by (node,device,port) (rate(node_infiniband_port_data_transmitted_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))", "legendFormat": "{{node}} {{device}}/{{port}} TX", "refId": "B"}
+        {
+          "expr": "sum by (node,device,port) (rate(node_infiniband_port_data_received_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))",
+          "legendFormat": "{{node}} {{device}}/{{port}} RX",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (node,device,port) (rate(node_infiniband_port_data_transmitted_bytes_total{cluster=~\"$cluster\",node=~\"$node\"}[1m]))",
+          "legendFormat": "{{node}} {{device}}/{{port}} TX",
+          "refId": "B"
+        }
       ],
       "title": "RDMA Throughput",
       "type": "timeseries"
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "Requests, Queue and HTTP",
+      "gridPos": {
+        "x": 0,
+        "y": 37,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 15,
+      "type": "stat",
+      "title": "Active HTTP Requests",
+      "gridPos": {
+        "x": 12,
+        "y": 38,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum({__name__=\"sglang:http_requests_active\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "stat",
+      "title": "Aborted Requests/s",
+      "gridPos": {
+        "x": 16,
+        "y": 38,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate({__name__=\"sglang:num_aborted_requests_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "stat",
+      "title": "Retracted Requests/s",
+      "gridPos": {
+        "x": 20,
+        "y": 38,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate({__name__=\"sglang:num_retracted_requests_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "HTTP Responses by Status",
+      "gridPos": {
+        "x": 12,
+        "y": 42,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role,status) (rate({__name__=\"sglang:http_responses_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[1m]))",
+          "legendFormat": "{{node}} {{role}} {{status}}"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "row",
+      "title": "Token Throughput and Request Length",
+      "gridPos": {
+        "x": 0,
+        "y": 50,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Generation Throughput and Realtime Tokens",
+      "gridPos": {
+        "x": 12,
+        "y": 51,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Tops"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role) ({__name__=\"sglang:gen_throughput\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} gen throughput"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:realtime_tokens_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[1m]))",
+          "legendFormat": "{{node}} {{role}} realtime"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Prompt Length p50 / p95 / p99",
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:prompt_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:prompt_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:prompt_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p99"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Generation Length p50 / p95 / p99",
+      "gridPos": {
+        "x": 12,
+        "y": 59,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:generation_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:generation_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:generation_tokens_histogram_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p99"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "row",
+      "title": "Latency",
+      "gridPos": {
+        "x": 0,
+        "y": 67,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 24,
+      "type": "timeseries",
+      "title": "Inter-token Latency p50 / p95",
+      "gridPos": {
+        "x": 8,
+        "y": 68,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:inter_token_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:inter_token_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "E2E Latency p50 / p95 / p99",
+      "gridPos": {
+        "x": 16,
+        "y": 68,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99,sum by (le,node,role) (rate({__name__=\"sglang:e2e_request_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p99"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "type": "timeseries",
+      "title": "Queue Time p50 / p95",
+      "gridPos": {
+        "x": 0,
+        "y": 76,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:queue_time_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:queue_time_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "type": "timeseries",
+      "title": "Per-stage Request Latency p95",
+      "gridPos": {
+        "x": 12,
+        "y": 76,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role,stage) (rate({__name__=\"sglang:per_stage_req_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} {{stage}} p95"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "type": "row",
+      "title": "KV, SWA and Mamba Cache Pools",
+      "gridPos": {
+        "x": 0,
+        "y": 84,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 29,
+      "type": "timeseries",
+      "title": "Cache and Token Usage",
+      "gridPos": {
+        "x": 0,
+        "y": 85,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) ({__name__=\"sglang:cache_hit_rate\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} cache hit"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) ({__name__=\"sglang:token_usage\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} token usage"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) ({__name__=\"sglang:full_token_usage\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} full usage"
+        },
+        {
+          "refId": "D",
+          "expr": "max by (node,role) ({__name__=\"sglang:swa_token_usage\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} SWA usage"
+        },
+        {
+          "refId": "E",
+          "expr": "max by (node,role) ({__name__=\"sglang:mamba_usage\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} Mamba usage"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "type": "timeseries",
+      "title": "KV Tokens Available / Used / Evictable",
+      "gridPos": {
+        "x": 12,
+        "y": 85,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role) ({__name__=\"sglang:kv_available_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} available"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (node,role) ({__name__=\"sglang:kv_used_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} used"
+        },
+        {
+          "refId": "C",
+          "expr": "sum by (node,role) ({__name__=\"sglang:kv_evictable_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} evictable"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "type": "timeseries",
+      "title": "SWA Pool Tokens",
+      "gridPos": {
+        "x": 0,
+        "y": 93,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role) ({__name__=\"sglang:swa_available_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} available"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (node,role) ({__name__=\"sglang:swa_used_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} used"
+        },
+        {
+          "refId": "C",
+          "expr": "sum by (node,role) ({__name__=\"sglang:swa_evictable_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} evictable"
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "type": "timeseries",
+      "title": "Mamba Pool Tokens",
+      "gridPos": {
+        "x": 12,
+        "y": 93,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role) ({__name__=\"sglang:mamba_available_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} available"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (node,role) ({__name__=\"sglang:mamba_used_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} used"
+        },
+        {
+          "refId": "C",
+          "expr": "sum by (node,role) ({__name__=\"sglang:mamba_evictable_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} evictable"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "type": "row",
+      "title": "PD Disaggregation and KV Transfer",
+      "gridPos": {
+        "x": 0,
+        "y": 101,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 34,
+      "type": "timeseries",
+      "title": "PD Queue Depths",
+      "gridPos": {
+        "x": 0,
+        "y": 102,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role) ({__name__=\"sglang:num_prefill_bootstrap_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} bootstrap"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (node,role) ({__name__=\"sglang:num_prefill_inflight_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} prefill inflight"
+        },
+        {
+          "refId": "C",
+          "expr": "sum by (node,role) ({__name__=\"sglang:num_decode_prealloc_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} decode prealloc"
+        },
+        {
+          "refId": "D",
+          "expr": "sum by (node,role) ({__name__=\"sglang:num_decode_transfer_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} decode transfer"
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "type": "timeseries",
+      "title": "KV Transfer Speed p50 / p95",
+      "gridPos": {
+        "x": 12,
+        "y": 102,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "GBs"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:kv_transfer_speed_gb_s_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:kv_transfer_speed_gb_s_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} {{role}} p95"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "type": "timeseries",
+      "title": "KV Transfer Latency p50 / p95",
+      "gridPos": {
+        "x": 0,
+        "y": 110,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50,sum by (le,node,role) (rate({__name__=\"sglang:kv_transfer_latency_ms_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:kv_transfer_latency_ms_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} p95"
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "type": "timeseries",
+      "title": "Bootstrap / Allocation Latency p95",
+      "gridPos": {
+        "x": 8,
+        "y": 110,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:kv_transfer_bootstrap_ms_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} bootstrap"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95,sum by (le,node,role) (rate({__name__=\"sglang:kv_transfer_alloc_ms_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
+          "legendFormat": "{{node}} allocation"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "type": "timeseries",
+      "title": "PD Failures and Retries/s",
+      "gridPos": {
+        "x": 16,
+        "y": 110,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:num_bootstrap_failed_reqs_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
+          "legendFormat": "{{node}} bootstrap failed"
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:num_transfer_failed_reqs_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
+          "legendFormat": "{{node}} transfer failed"
+        },
+        {
+          "refId": "C",
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:num_prefill_retries_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
+          "legendFormat": "{{node}} prefill retries"
+        },
+        {
+          "refId": "D",
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:failed_session_recoveries_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
+          "legendFormat": "{{node}} recovery failed"
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "type": "row",
+      "title": "Scheduler, Speculative Decode and Capacity",
+      "gridPos": {
+        "x": 0,
+        "y": 118,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 40,
+      "type": "timeseries",
+      "title": "Scheduler Utilization / Forward Occupancy",
+      "gridPos": {
+        "x": 0,
+        "y": 119,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) ({__name__=\"sglang:utilization\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} utilization"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) ({__name__=\"sglang:fwd_occupancy\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}) / 100",
+          "legendFormat": "{{node}} fwd occupancy"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) ({__name__=\"sglang:new_token_ratio\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} new token ratio"
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Speculative Decode Acceptance",
+      "gridPos": {
+        "x": 8,
+        "y": 119,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_rate\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} accept rate"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_length\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} accept length"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) ({__name__=\"sglang:spec_num_draft_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} draft tokens"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "type": "timeseries",
+      "title": "Capacity and Startup Memory",
+      "gridPos": {
+        "x": 16,
+        "y": 119,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) ({__name__=\"sglang:max_total_num_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} max tokens"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) ({__name__=\"sglang:context_len\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} context length"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) ({__name__=\"sglang:startup_available_gpu_memory_gb\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} startup GPU GB"
+        }
+      ]
     }
   ],
   "refresh": "15s",
   "schemaVersion": 41,
-  "tags": ["inference", "sglang", "musa", "pd"],
+  "tags": [
+    "inference",
+    "musa",
+    "pd",
+    "sglang",
+    "unified"
+  ],
   "templating": {
     "list": [
-      {"current": {"selected": false, "text": "All", "value": "$__all"}, "datasource": {"type": "prometheus", "uid": "prometheus"}, "definition": "label_values(up, cluster)", "includeAll": true, "label": "Cluster", "multi": true, "name": "cluster", "query": {"query": "label_values(up, cluster)", "refId": "PrometheusVariableQueryEditor-VariableQuery"}, "refresh": 1, "type": "query"},
-      {"current": {"selected": false, "text": "All", "value": "$__all"}, "datasource": {"type": "prometheus", "uid": "prometheus"}, "definition": "label_values(up{cluster=~\"$cluster\"}, node)", "includeAll": true, "label": "Node", "multi": true, "name": "node", "query": {"query": "label_values(up{cluster=~\"$cluster\"}, node)", "refId": "PrometheusVariableQueryEditor-VariableQuery"}, "refresh": 1, "type": "query"},
-      {"current": {"selected": false, "text": "All", "value": "$__all"}, "datasource": {"type": "prometheus", "uid": "prometheus"}, "definition": "label_values({__name__=\"sglang:num_running_reqs\",cluster=~\"$cluster\"}, role)", "includeAll": true, "label": "Role", "multi": true, "name": "role", "query": {"query": "label_values({__name__=\"sglang:num_running_reqs\",cluster=~\"$cluster\"}, role)", "refId": "PrometheusVariableQueryEditor-VariableQuery"}, "refresh": 1, "type": "query"}
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(up, cluster)",
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": true,
+        "name": "cluster",
+        "query": {
+          "query": "label_values(up, cluster)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(up{cluster=~\"$cluster\"}, node)",
+        "includeAll": true,
+        "label": "Node",
+        "multi": true,
+        "name": "node",
+        "query": {
+          "query": "label_values(up{cluster=~\"$cluster\"}, node)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values({__name__=\"sglang:num_running_reqs\",cluster=~\"$cluster\"}, role)",
+        "includeAll": true,
+        "label": "Role",
+        "multi": true,
+        "name": "role",
+        "query": {
+          "query": "label_values({__name__=\"sglang:num_running_reqs\",cluster=~\"$cluster\"}, role)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "type": "query"
+      }
     ]
   },
-  "time": {"from": "now-1h", "to": "now"},
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
   "timezone": "browser",
   "title": "Inference System Overview",
   "uid": "inference-system-overview",
   "version": 1,
-  "weekStart": ""
+  "weekStart": "",
+  "description": "Unified cluster, SGLang, accelerator, CPU, memory, Ethernet and RDMA monitoring."
 }

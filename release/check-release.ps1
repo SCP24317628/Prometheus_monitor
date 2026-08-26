@@ -7,7 +7,7 @@ $required = @(
   "images/center/Dockerfile", "images/node-musa/Dockerfile",
   "deploy/run-center.sh", "deploy/run-node-musa.sh",
   "monitoring/grafana/dashboards/inference-overview.json",
-  "monitoring/grafana/dashboards/sglang-detailed.json"
+  "monitoring/grafana/fragments/sglang-detailed.fragment.json"
 )
 $missing = @($required | Where-Object { -not (Test-Path (Join-Path $root $_)) })
 $imageTars = @(

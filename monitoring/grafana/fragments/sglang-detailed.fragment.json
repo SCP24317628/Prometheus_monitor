@@ -54,7 +54,7 @@
   ]},
   "time":{"from":"now-1h","to":"now"},
   "timezone":"browser",
-  "title":"SGLang Detailed Metrics",
-  "uid":"sglang-detailed-metrics",
+  "title":"SGLang Detailed Metrics Fragment",
+  "uid":"sglang-detailed-metrics-fragment",
   "version":1
 }

@@ -159,11 +159,7 @@ python monitorctl.py --config config/monitoring.local.yml urls
 http://<public_host>:3000/d/inference-system-overview/inference-system-overview
 ```
 
-SGLang 详细看板：
-
-```text
-http://<public_host>:3000/d/sglang-detailed-metrics/sglang-detailed-metrics
-```
+SGLang 详细指标已整合在同一张总览 Dashboard 中，不再单独提供第二个入口。
 
 ## 7. 停止
 

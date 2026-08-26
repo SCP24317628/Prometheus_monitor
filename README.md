@@ -93,11 +93,11 @@ python monitorctl.py --config config/monitoring.local.yml status
 python monitorctl.py --config config/monitoring.local.yml urls
 ```
 
-`urls` 生成 `monitoring/generated/access.json`，包含 Grafana、两个 Dashboard、Prometheus Targets，以及外部推理服务 endpoint。
+`urls` 生成 `monitoring/generated/access.json`，包含 Grafana 统一 Dashboard、Prometheus Targets，以及外部推理服务 endpoint。
 
 ```text
 http://<public_host>:3000/d/inference-system-overview/inference-system-overview
-http://<public_host>:3000/d/sglang-detailed-metrics/sglang-detailed-metrics
+SGLang、资源和网络指标均已整合在同一张 Dashboard 中，按区块向下展开；产品不再 provisioning 独立的 SGLang Dashboard。
 ```
 
 ## 停止产品
