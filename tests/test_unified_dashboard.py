@@ -14,7 +14,8 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertEqual(dashboard["uid"], "inference-system-overview")
         self.assertGreaterEqual(len(dashboard["panels"]), 40)
         titles = {panel.get("title", "") for panel in dashboard["panels"]}
-        self.assertIn("Requests, Queue and HTTP", titles)
+        self.assertIn("SGLang Performance Summary", titles)
+        self.assertIn("Latency Comparison: TTFT and TPOT", titles)
         self.assertIn("PD Disaggregation and KV Transfer", titles)
         self.assertIn("GPU Utilization (MTDCGM)", titles)
 
