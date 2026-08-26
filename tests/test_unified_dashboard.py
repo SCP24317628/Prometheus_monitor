@@ -16,7 +16,7 @@ class UnifiedDashboardTest(unittest.TestCase):
         titles = {panel.get("title", "") for panel in dashboard["panels"]}
         self.assertIn("SGLang Performance Summary", titles)
         self.assertIn("Latency Comparison: TTFT and TPOT", titles)
-        self.assertIn("PD Disaggregation and KV Transfer", titles)
+        self.assertIn("KV Cache and PD Transfer", titles)
         self.assertIn("GPU Utilization (MTDCGM)", titles)
 
 
