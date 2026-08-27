@@ -1,22 +1,18 @@
-# Inference Monitor Release Package
+# Inference Monitor 离线发布包
 
-这是给最终用户的离线发布包结构。正式离线包应包含：
+这是面向最终用户的离线交付物。包内应包含：
 
 ```text
-inference-monitor-<version>/
-├── monitorctl.py
-├── requirements.txt
+inference-monitor-<VERSION>/
+├── INSTALL_QUICKSTART.md
+├── monitorctl.py / requirements.txt
 ├── config/monitoring.yml
-├── monitoring/
-├── deploy/
-├── images/
-│   ├── inference-monitor-center-<version>.tar
-│   ├── inference-monitor-node-musa-<version>.tar
-│   └── inference-monitor-node-nvidia-<version>.tar（可选）
-└── INSTALL_OFFLINE.md
+├── monitoring/ / deploy/
+└── images/
+    ├── inference-monitor-center-<VERSION>.tar
+    ├── inference-monitor-node-musa-<VERSION>.tar
+    └── inference-monitor-node-nvidia-<VERSION>.tar（可选）
 ```
 
-`images/*.tar` 是发布门槛：最终用户不需要 Docker build，只执行
-`docker load` 后运行两个容器。
-
-发布前运行 `release/check-release.ps1`，确认源码、必需镜像tar和校验文件齐全。
+用户不需要执行 `docker build`，只需 `docker load` 后按
+`INSTALL_QUICKSTART.md` 启动 center 和 node。镜像、配置和源码版本必须一致。

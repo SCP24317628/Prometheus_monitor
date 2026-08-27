@@ -52,9 +52,10 @@ python -m unittest discover -s tests -v
 - 两个 Dockerfile 构建成功。
 - center 同时提供 Prometheus `/-/ready` 和 Grafana `/api/health`。
 - node 同时提供 `:9100/metrics` 和 `:9500/metrics`。
-- Prometheus 所有期望 targets 为 UP。
+- Prometheus 所有配置的 targets 为 UP；SGLang worker targets 只有在对应服务运行
+  且 `/metrics` 可访问时才应为 UP。
 - 统一 Overview Dashboard 已 provisioning；SGLang 详细面板作为同一张看板的下方区块加载。
-- SGLang Dashboard 全部 PromQL 通过真实 Prometheus 验证。
+- Prefill/Decode 的 SGLang PromQL 通过真实 Prometheus 验证；Router 不属于默认 target。
 
 ## 高级入口
 
