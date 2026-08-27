@@ -2,6 +2,8 @@
 
 最终用户请直接阅读：[INSTALL_QUICKSTART.md](INSTALL_QUICKSTART.md)
 
+指标名称、来源、端口和当前环境状态见：[指标目录](docs/METRICS_CATALOG.md)
+
 本产品提供一个中心容器和每节点一个采集容器：
 
 ```text
