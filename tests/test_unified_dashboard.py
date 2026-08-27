@@ -23,12 +23,18 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertIn("GPU Utilization (Unified)", titles)
 
         timeseries_titles = {p.get("title") for p in dashboard["panels"] if p.get("type") == "timeseries"}
-        self.assertIn("Request Concurrency & Queue", timeseries_titles)
-        self.assertIn("Generation Throughput", timeseries_titles)
+        self.assertIn("Active Requests by Node / Role", timeseries_titles)
+        self.assertIn("Queued Requests by Node / Role", timeseries_titles)
+        self.assertIn("Token Throughput by Node / Role", timeseries_titles)
+        self.assertIn("Generation Throughput & Realtime Tokens by Node / Role", timeseries_titles)
         self.assertIn("TTFT Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
         self.assertIn("E2E Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
         self.assertNotIn("Time to First Token", timeseries_titles)
         by_title = {p.get("title"): p for p in dashboard["panels"]}
+        self.assertEqual(by_title["Token Throughput by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
+        self.assertEqual(by_title["Generation Throughput & Realtime Tokens by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
+        active_exprs = [target["expr"] for target in by_title["Active Requests by Node / Role"]["targets"]]
+        self.assertTrue(all("sum by (node,role)" in expr for expr in active_exprs))
         self.assertEqual(by_title["CPU Utilization"]["fieldConfig"]["defaults"]["unit"], "percent")
         self.assertEqual(by_title["CPU Utilization"]["fieldConfig"]["defaults"]["max"], 100)
         self.assertEqual(by_title["Memory Used"]["fieldConfig"]["defaults"]["unit"], "bytes")

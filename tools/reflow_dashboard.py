@@ -58,18 +58,25 @@ def reflow(path: pathlib.Path) -> dict:
     # Concurrency/queue: trends are more useful than a single current value.
     panels.append(row(100, "SGLang Concurrency & Queue"))
     panels.extend([
-        timeseries(101, "Request Concurrency & Queue", [
-            target(f"sum(sglang:num_running_reqs{{{FILTER}}})", legend="running"),
-            target(f"sum(sglang:num_prefill_inflight_queue_reqs{{{FILTER}}})", ref="B", legend="prefill inflight"),
-            target(f"sum(sglang:num_queue_reqs{{{FILTER}}})", ref="C", legend="queued"),
+        timeseries(101, "Active Requests by Node / Role", [
+            target(f"sum by (node,role) (sglang:num_running_reqs{{{FILTER}}})", legend="{{node}} {{role}} running"),
+            target(f"sum by (node,role) (sglang:num_prefill_inflight_queue_reqs{{{FILTER}}})", ref="B", legend="{{node}} {{role}} prefill inflight"),
         ], "short"),
-        timeseries(102, "Generation Throughput", [
-            target(f"sum(sglang:gen_throughput{{{FILTER}}})", legend="tokens/s"),
-        ], "tokps"),
+        timeseries(102, "Queued Requests by Node / Role", [
+            target(f"sum by (node,role) (sglang:num_queue_reqs{{{FILTER}}})", legend="{{node}} {{role}} queued"),
+        ], "short"),
     ])
-    for title in ("SGLang Running and Queued Requests", "Token Throughput", "Generation Throughput and Realtime Tokens"):
-        if title in by_title:
-            panels.append(by_title[title])
+    token_panels = (
+        (("Token Throughput by Node / Role", "Token Throughput"), "Token Throughput by Node / Role"),
+        (("Generation Throughput & Realtime Tokens by Node / Role", "Generation Throughput and Realtime Tokens"),
+         "Generation Throughput & Realtime Tokens by Node / Role"),
+    )
+    for aliases, output_title in token_panels:
+        panel = next((by_title[name] for name in aliases if name in by_title), None)
+        if panel:
+            panel["title"] = output_title
+            panel.setdefault("fieldConfig", {}).setdefault("defaults", {})["unit"] = "suffix: tok/s"
+            panels.append(panel)
 
     # Latency: TTFT and E2E are trends, with mean and tail lines together.  The
     # deployed SGLang exporter has no inter-token latency histogram, so TPOT/

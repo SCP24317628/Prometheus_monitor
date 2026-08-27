@@ -28,6 +28,15 @@ addresses. The Router is not part of the default monitoring chain.
   is an independent Prometheus target, even when several workers share the same
   metrics port number. The `role` label is mandatory for latency and queue
   comparisons; the product must never infer P/D role from the port number.
+- Diagnostic charts must preserve `node` and `role` in both PromQL aggregation
+  and legends. Cluster-wide sums may be offered as an explicit overview, but
+  must not replace per-worker lines used for bottleneck localization.
+- Request concurrency and queued requests are separate trends. Active requests
+  include running requests and Prefill inflight requests; queue depth is shown
+  independently so users can distinguish service concurrency from backlog.
+- Token throughput is displayed as `tok/s`. It must not be labeled TOPS or
+  TFLOPS: GPU floating-point throughput requires hardware FLOP counters that
+  are not exposed by the current SGLang/MUSA exporters.
 - Router metrics are optional integration data (health, ingress and routing
   errors when the Router exposes them); they are not required for worker
   latency, queue, KV, GPU or RDMA metrics and are not provisioned by default.

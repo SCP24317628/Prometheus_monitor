@@ -25,7 +25,7 @@
     {
       "id": 101,
       "type": "timeseries",
-      "title": "Request Concurrency & Queue",
+      "title": "Active Requests by Node / Role",
       "gridPos": {
         "x": 0,
         "y": 1,
@@ -54,25 +54,20 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "running"
+          "expr": "sum by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} running"
         },
         {
           "refId": "B",
-          "expr": "sum(sglang:num_prefill_inflight_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "prefill inflight"
-        },
-        {
-          "refId": "C",
-          "expr": "sum(sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "queued"
+          "expr": "sum by (node,role) (sglang:num_prefill_inflight_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} prefill inflight"
         }
       ]
     },
     {
       "id": 102,
       "type": "timeseries",
-      "title": "Generation Throughput",
+      "title": "Queued Requests by Node / Role",
       "gridPos": {
         "x": 12,
         "y": 1,
@@ -85,7 +80,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "tokps"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -101,8 +96,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(sglang:gen_throughput{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "tokens/s"
+          "expr": "sum by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} queued"
         }
       ]
     },
@@ -113,66 +108,12 @@
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "showPoints": "never"
-          }
+          "unit": "suffix: tok/s"
         },
         "overrides": []
       },
       "gridPos": {
         "x": 0,
-        "y": 9,
-        "w": 12,
-        "h": 8
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} {{role}} running",
-          "refId": "A"
-        },
-        {
-          "expr": "sum by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} {{role}} queued",
-          "refId": "B"
-        }
-      ],
-      "title": "SGLang Running and Queued Requests",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "Tops"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "x": 12,
         "y": 9,
         "w": 12,
         "h": 8
@@ -210,16 +151,16 @@
           "refId": "C"
         }
       ],
-      "title": "Token Throughput",
+      "title": "Token Throughput by Node / Role",
       "type": "timeseries"
     },
     {
       "id": 20,
       "type": "timeseries",
-      "title": "Generation Throughput and Realtime Tokens",
+      "title": "Generation Throughput & Realtime Tokens by Node / Role",
       "gridPos": {
-        "x": 0,
-        "y": 17,
+        "x": 12,
+        "y": 9,
         "w": 12,
         "h": 8
       },
@@ -229,7 +170,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "Tops"
+          "unit": "suffix: tok/s"
         },
         "overrides": []
       },
@@ -266,7 +207,7 @@
       "title": "Latency: TTFT & E2E",
       "gridPos": {
         "x": 0,
-        "y": 25,
+        "y": 17,
         "w": 24,
         "h": 1
       },
@@ -279,7 +220,7 @@
       "title": "TTFT Trend by Node / Role (Mean / P90 / P99)",
       "gridPos": {
         "x": 0,
-        "y": 26,
+        "y": 18,
         "w": 12,
         "h": 8
       },
@@ -326,7 +267,7 @@
       "title": "E2E Trend by Node / Role (Mean / P90 / P99)",
       "gridPos": {
         "x": 12,
-        "y": 26,
+        "y": 18,
         "w": 12,
         "h": 8
       },
@@ -373,7 +314,7 @@
       "title": "Queue Time p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 34,
+        "y": 26,
         "w": 12,
         "h": 8
       },
@@ -415,7 +356,7 @@
       "title": "E2E Latency p50 / p95 / p99",
       "gridPos": {
         "x": 12,
-        "y": 34,
+        "y": 26,
         "w": 12,
         "h": 8
       },
@@ -462,7 +403,7 @@
       "title": "Per-stage Request Latency p95",
       "gridPos": {
         "x": 0,
-        "y": 42,
+        "y": 34,
         "w": 12,
         "h": 8
       },
@@ -499,7 +440,7 @@
       "title": "Speculative Decode Acceptance",
       "gridPos": {
         "x": 12,
-        "y": 42,
+        "y": 34,
         "w": 12,
         "h": 8
       },
@@ -544,7 +485,7 @@
       "title": "KV Cache & PD Transfer",
       "gridPos": {
         "x": 0,
-        "y": 50,
+        "y": 42,
         "w": 24,
         "h": 1
       },
@@ -566,7 +507,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 51,
+        "y": 43,
         "w": 12,
         "h": 8
       },
@@ -602,7 +543,7 @@
       "title": "Cache and Token Usage",
       "gridPos": {
         "x": 12,
-        "y": 51,
+        "y": 43,
         "w": 12,
         "h": 8
       },
@@ -662,7 +603,7 @@
       "title": "KV Tokens Available / Used / Evictable",
       "gridPos": {
         "x": 0,
-        "y": 59,
+        "y": 51,
         "w": 12,
         "h": 8
       },
@@ -709,7 +650,7 @@
       "title": "SWA Pool Tokens",
       "gridPos": {
         "x": 12,
-        "y": 59,
+        "y": 51,
         "w": 12,
         "h": 8
       },
@@ -756,7 +697,7 @@
       "title": "Mamba Pool Tokens",
       "gridPos": {
         "x": 0,
-        "y": 67,
+        "y": 59,
         "w": 12,
         "h": 8
       },
@@ -803,7 +744,7 @@
       "title": "PD Queue Depths",
       "gridPos": {
         "x": 12,
-        "y": 67,
+        "y": 59,
         "w": 12,
         "h": 8
       },
@@ -854,7 +795,7 @@
       "title": "KV Transfer Speed p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 75,
+        "y": 67,
         "w": 12,
         "h": 8
       },
@@ -896,7 +837,7 @@
       "title": "KV Transfer Latency p50 / p95",
       "gridPos": {
         "x": 12,
-        "y": 75,
+        "y": 67,
         "w": 12,
         "h": 8
       },
@@ -938,7 +879,7 @@
       "title": "Bootstrap / Allocation Latency p95",
       "gridPos": {
         "x": 0,
-        "y": 83,
+        "y": 75,
         "w": 12,
         "h": 8
       },
@@ -980,7 +921,7 @@
       "title": "PD Failures and Retries/s",
       "gridPos": {
         "x": 12,
-        "y": 83,
+        "y": 75,
         "w": 12,
         "h": 8
       },
@@ -1032,7 +973,7 @@
       "title": "GPU, CPU & Memory",
       "gridPos": {
         "x": 0,
-        "y": 91,
+        "y": 83,
         "w": 24,
         "h": 1
       },
@@ -1045,7 +986,7 @@
       "title": "GPU Utilization (Unified)",
       "gridPos": {
         "x": 0,
-        "y": 92,
+        "y": 84,
         "w": 12,
         "h": 8
       },
@@ -1089,7 +1030,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 92,
+        "y": 84,
         "w": 12,
         "h": 8
       },
@@ -1125,7 +1066,7 @@
       "title": "Scheduler Utilization / Forward Occupancy",
       "gridPos": {
         "x": 0,
-        "y": 100,
+        "y": 92,
         "w": 12,
         "h": 8
       },
@@ -1175,7 +1116,7 @@
       "title": "Capacity and Startup Memory",
       "gridPos": {
         "x": 12,
-        "y": 100,
+        "y": 92,
         "w": 12,
         "h": 8
       },
@@ -1220,7 +1161,7 @@
       "title": "CPU Utilization",
       "gridPos": {
         "x": 0,
-        "y": 108,
+        "y": 100,
         "w": 12,
         "h": 8
       },
@@ -1260,7 +1201,7 @@
       "title": "Memory Used",
       "gridPos": {
         "x": 12,
-        "y": 108,
+        "y": 100,
         "w": 12,
         "h": 8
       },
@@ -1299,7 +1240,7 @@
       "title": "Network: RDMA First",
       "gridPos": {
         "x": 0,
-        "y": 116,
+        "y": 108,
         "w": 24,
         "h": 1
       },
@@ -1319,7 +1260,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 117,
+        "y": 109,
         "w": 12,
         "h": 8
       },
@@ -1367,7 +1308,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 117,
+        "y": 109,
         "w": 12,
         "h": 8
       },

@@ -190,6 +190,11 @@ DCGM_FI_DEV_POWER_USAGE
 
 不同 dcgm-exporter 版本可能提供额外 DCGM 字段；产品不删除原始指标。
 
+当前 exporter 没有实际执行 FLOP 数量或 GPU 浮点吞吐计数器，因此不能生成真实
+TFLOPS。`sglang:gen_throughput`、`generation_tokens_total` 和
+`realtime_tokens_total` 的单位是 token/s；看板必须显示为 `tok/s`，不能将其
+误标成 TOPS/TFLOPS。
+
 ## 6. node_exporter 指标（9100）
 
 node exporter 是标准上游组件，当前 `performance` 组启用的主要类别为：
