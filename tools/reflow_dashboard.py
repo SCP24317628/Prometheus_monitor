@@ -30,11 +30,14 @@ def stat(panel_id: int, title: str, expr: str, unit: str = "short") -> dict:
     }
 
 
-def timeseries(panel_id: int, title: str, targets: list[dict]) -> dict:
+def timeseries(panel_id: int, title: str, targets: list[dict], unit: str | None = None) -> dict:
+    defaults = {}
+    if unit:
+        defaults["unit"] = unit
     return {"id": panel_id, "type": "timeseries", "title": title,
             "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
             "datasource": {"type": "prometheus", "uid": "prometheus"},
-            "fieldConfig": {"defaults": {}, "overrides": []},
+            "fieldConfig": {"defaults": defaults, "overrides": []},
             "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}},
             "targets": targets}
 
@@ -52,29 +55,37 @@ def reflow(path: pathlib.Path) -> dict:
                 if p.get("type") != "row" and p.get("id", 0) < 100}
     panels: list[dict] = []
 
-    # Concurrency/queue: only request-state and throughput cards.
+    # Concurrency/queue: trends are more useful than a single current value.
     panels.append(row(100, "SGLang Concurrency & Queue"))
     panels.extend([
-        stat(101, "Running Requests", f"sum(sglang:num_running_reqs{{{FILTER}}})"),
-        stat(102, "Prefill Inflight Requests", f"sum(sglang:num_prefill_inflight_queue_reqs{{{FILTER}}})"),
-        stat(103, "Queued Requests", f"sum(sglang:num_queue_reqs{{{FILTER}}})"),
-        stat(104, "Generation Throughput", f"sum(sglang:gen_throughput{{{FILTER}}})", "tokps"),
+        timeseries(101, "Request Concurrency & Queue", [
+            target(f"sum(sglang:num_running_reqs{{{FILTER}}})", legend="running"),
+            target(f"sum(sglang:num_prefill_inflight_queue_reqs{{{FILTER}}})", ref="B", legend="prefill inflight"),
+            target(f"sum(sglang:num_queue_reqs{{{FILTER}}})", ref="C", legend="queued"),
+        ], "short"),
+        timeseries(102, "Generation Throughput", [
+            target(f"sum(sglang:gen_throughput{{{FILTER}}})", legend="tokens/s"),
+        ], "tokps"),
     ])
     for title in ("SGLang Running and Queued Requests", "Token Throughput", "Generation Throughput and Realtime Tokens"):
         if title in by_title:
             panels.append(by_title[title])
 
-    # Latency: TTFT and E2E cards are adjacent and identically sized.  The
+    # Latency: TTFT and E2E are trends, with mean and tail lines together.  The
     # deployed SGLang exporter has no inter-token latency histogram, so TPOT/
     # ITL cards are intentionally not populated with misleading No-data queries.
     panels.append(row(110, "Latency: TTFT & E2E"))
     panels.extend([
-        stat(111, "TTFT Mean", f"sum(rate(sglang:time_to_first_token_seconds_sum{{{FILTER}}}[5m])) / sum(rate(sglang:time_to_first_token_seconds_count{{{FILTER}}}[5m]))", "s"),
-        stat(112, "TTFT P90", f"histogram_quantile(0.90, sum by (le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", "s"),
-        stat(113, "TTFT P99", f"histogram_quantile(0.99, sum by (le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", "s"),
-        stat(114, "E2E Mean", f"sum(rate(sglang:e2e_request_latency_seconds_sum{{{FILTER}}}[5m])) / sum(rate(sglang:e2e_request_latency_seconds_count{{{FILTER}}}[5m]))", "s"),
-        stat(115, "E2E P90", f"histogram_quantile(0.90, sum by (le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", "s"),
-        stat(116, "E2E P99", f"histogram_quantile(0.99, sum by (le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", "s"),
+        timeseries(111, "TTFT Trend (Mean / P90 / P99)", [
+            target(f"sum(rate(sglang:time_to_first_token_seconds_sum{{{FILTER}}}[5m])) / sum(rate(sglang:time_to_first_token_seconds_count{{{FILTER}}}[5m]))", legend="mean"),
+            target(f"histogram_quantile(0.90, sum by (le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", ref="B", legend="p90"),
+            target(f"histogram_quantile(0.99, sum by (le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="p99"),
+        ], "s"),
+        timeseries(112, "E2E Trend (Mean / P90 / P99)", [
+            target(f"sum(rate(sglang:e2e_request_latency_seconds_sum{{{FILTER}}}[5m])) / sum(rate(sglang:e2e_request_latency_seconds_count{{{FILTER}}}[5m]))", legend="mean"),
+            target(f"histogram_quantile(0.90, sum by (le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="B", legend="p90"),
+            target(f"histogram_quantile(0.99, sum by (le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="p99"),
+        ], "s"),
     ])
     for title in ("Time to First Token", "Queue Time p50 / p95", "E2E Latency p50 / p95 / p99", "Per-stage Request Latency p95"):
         if title in by_title:
@@ -90,13 +101,17 @@ def reflow(path: pathlib.Path) -> dict:
 
     # Accelerator and host resources.
     panels.append(row(130, "GPU, CPU & Memory"))
-    for title in ("GPU Utilization (MTDCGM)", "GPU Memory Used", "Scheduler Utilization / Forward Occupancy",
+    gpu_utilization = (by_title.get("GPU Utilization (Unified)") or
+                       by_title.get("GPU Utilization (MTDCGM)") or
+                       timeseries(10, "GPU Utilization (Unified)", [
+                           target(f"accelerator_gpu_utilization_ratio{{{NODE_FILTER}}}", legend="{{node}} GPU{{device}}"),
+                       ], "percentunit"))
+    gpu_utilization["title"] = "GPU Utilization (Unified)"
+    panels.append(gpu_utilization)
+    for title in ("GPU Memory Used", "Scheduler Utilization / Forward Occupancy",
                   "Speculative Decode Acceptance", "Capacity and Startup Memory"):
         if title in by_title:
-            panel = by_title[title]
-            if title == "GPU Utilization (MTDCGM)":
-                panel["title"] = "GPU Utilization (Unified)"
-            panels.append(panel)
+            panels.append(by_title[title])
     panels.extend([
         timeseries(43, "CPU Utilization", [target(f"100 - (avg by (node) (rate(node_cpu_seconds_total{{mode=\"idle\",{NODE_FILTER}}}[5m])) * 100)", legend="{{node}}")]),
         timeseries(44, "Memory Used", [target(f"node_memory_MemTotal_bytes{{{NODE_FILTER}}} - node_memory_MemAvailable_bytes{{{NODE_FILTER}}}", legend="{{node}}")]),
