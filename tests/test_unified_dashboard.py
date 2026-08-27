@@ -30,6 +30,9 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertIn("TTFT Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
         self.assertIn("E2E Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
         self.assertNotIn("Time to First Token", timeseries_titles)
+        self.assertNotIn("Per-stage Request Latency p95", timeseries_titles)
+        self.assertIn("Prefill Critical Stages p95 by Node", timeseries_titles)
+        self.assertIn("Decode Critical Stages p95 by Node", timeseries_titles)
         by_title = {p.get("title"): p for p in dashboard["panels"]}
         self.assertEqual(by_title["Token Throughput by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
         self.assertEqual(by_title["Generation Throughput & Realtime Tokens by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
@@ -46,6 +49,10 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertEqual(by_title["Speculative Acceptance Rate by Node / Role"]["fieldConfig"]["defaults"]["unit"], "percentunit")
         self.assertEqual(len(by_title["Draft Tokens & Accepted Length by Node / Role"]["targets"]), 2)
         self.assertEqual(len(by_title["Speculative Acceptance Rate by Node / Role"]["targets"]), 1)
+        self.assertIn("prefill_forward|prefill_bootstrap|prefill_transfer_kv_cache",
+                      by_title["Prefill Critical Stages p95 by Node"]["targets"][0]["expr"])
+        self.assertIn("decode_bootstrap|decode_transferred",
+                      by_title["Decode Critical Stages p95 by Node"]["targets"][0]["expr"])
         self.assertFalse({p.get("title") for p in dashboard["panels"] if p.get("type") == "stat"} &
                          {"Running Requests", "Prefill Inflight Requests", "Queued Requests", "Generation Throughput",
                           "TTFT Mean", "TTFT P90", "TTFT P99", "E2E Mean", "E2E P90", "E2E P99"})

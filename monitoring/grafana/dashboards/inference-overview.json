@@ -479,7 +479,7 @@
     {
       "id": 27,
       "type": "timeseries",
-      "title": "Per-stage Request Latency p95",
+      "title": "Prefill Critical Stages p95 by Node",
       "gridPos": {
         "x": 0,
         "y": 42,
@@ -508,8 +508,45 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95,sum by (le,node,role,stage) (rate({__name__=\"sglang:per_stage_req_latency_seconds_bucket\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])))",
-          "legendFormat": "{{node}} {{role}} {{stage}} p95"
+          "expr": "histogram_quantile(0.95, sum by (le,node,stage) (rate(sglang:per_stage_req_latency_seconds_bucket{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\",stage=~\"prefill_forward|prefill_bootstrap|prefill_transfer_kv_cache\"}[5m])))",
+          "legendFormat": "{{node}} {{stage}} p95"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "type": "timeseries",
+      "title": "Decode Critical Stages p95 by Node",
+      "gridPos": {
+        "x": 12,
+        "y": 42,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le,node,stage) (rate(sglang:per_stage_req_latency_seconds_bucket{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\",stage=~\"decode_bootstrap|decode_transferred\"}[5m])))",
+          "legendFormat": "{{node}} {{stage}} p95"
         }
       ]
     },

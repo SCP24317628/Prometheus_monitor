@@ -40,6 +40,11 @@ addresses. The Router is not part of the default monitoring chain.
 - Speculative decoding is displayed in two adjacent trends: draft-token count
   together with accepted length, and acceptance rate in a separate percentage
   chart. All three series retain `node` and `role` for worker-level diagnosis.
+- The primary per-stage view contains only bottleneck-oriented stages. Prefill
+  shows forward compute, bootstrap and KV-cache transfer; Decode shows bootstrap
+  and transferred/KV-arrival time. Decode waiting is already represented by the
+  Queue Time chart, while `decode_prepare` and `fake_output` remain queryable raw
+  metrics but are excluded from the primary dashboard.
 - Router metrics are optional integration data (health, ingress and routing
   errors when the Router exposes them); they are not required for worker
   latency, queue, KV, GPU or RDMA metrics and are not provisioned by default.

@@ -103,9 +103,23 @@ def reflow(path: pathlib.Path) -> dict:
             target(f"max by (node,role) (sglang:spec_accept_rate{{{FILTER}}})", legend="{{node}} {{role}} acceptance rate"),
         ], "percentunit"),
     ])
-    for title in ("Queue Time p50 / p95", "E2E Latency p50 / p95 / p99", "Per-stage Request Latency p95"):
+    for title in ("Queue Time p50 / p95", "E2E Latency p50 / p95 / p99"):
         if title in by_title:
             panels.append(by_title[title])
+    panels.extend([
+        timeseries(27, "Prefill Critical Stages p95 by Node", [
+            target(
+                f"histogram_quantile(0.95, sum by (le,node,stage) (rate(sglang:per_stage_req_latency_seconds_bucket{{{FILTER},stage=~\"prefill_forward|prefill_bootstrap|prefill_transfer_kv_cache\"}}[5m])))",
+                legend="{{node}} {{stage}} p95",
+            ),
+        ], "s"),
+        timeseries(46, "Decode Critical Stages p95 by Node", [
+            target(
+                f"histogram_quantile(0.95, sum by (le,node,stage) (rate(sglang:per_stage_req_latency_seconds_bucket{{{FILTER},stage=~\"decode_bootstrap|decode_transferred\"}}[5m])))",
+                legend="{{node}} {{stage}} p95",
+            ),
+        ], "s"),
+    ])
 
     # KV cache and PD transfer.
     panels.append(row(120, "KV Cache & PD Transfer"))
