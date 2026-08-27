@@ -309,12 +309,283 @@
       ]
     },
     {
+      "id": 150,
+      "type": "row",
+      "title": "Prefill Drill-down: Bootstrap / Compute / KV Transfer",
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 151,
+          "type": "timeseries",
+          "title": "Bootstrap & Allocation p95 by Node",
+          "gridPos": {
+            "x": 0,
+            "y": 27,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_bootstrap_ms_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} bootstrap p95"
+            },
+            {
+              "refId": "B",
+              "expr": "histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_alloc_ms_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} allocation p95"
+            }
+          ]
+        },
+        {
+          "id": 152,
+          "type": "timeseries",
+          "title": "Forward & Chunked Prefill p95 by Node",
+          "gridPos": {
+            "x": 12,
+            "y": 27,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.95, sum by (le,node,stage) (rate(sglang:per_stage_req_latency_seconds_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\",stage=~\"prefill_forward|chunked_prefill\"}[5m])))",
+              "legendFormat": "{{node}} {{stage}} p95"
+            }
+          ]
+        },
+        {
+          "id": 153,
+          "type": "timeseries",
+          "title": "Prompt Length p50 / p95 / p99 by Node",
+          "gridPos": {
+            "x": 0,
+            "y": 35,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.50, sum by (le,node) (rate(sglang:prompt_tokens_histogram_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p50"
+            },
+            {
+              "refId": "B",
+              "expr": "histogram_quantile(0.95, sum by (le,node) (rate(sglang:prompt_tokens_histogram_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p95"
+            },
+            {
+              "refId": "C",
+              "expr": "histogram_quantile(0.99, sum by (le,node) (rate(sglang:prompt_tokens_histogram_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p99"
+            }
+          ]
+        },
+        {
+          "id": 154,
+          "type": "timeseries",
+          "title": "KV Transfer Latency p50 / p95 by Node",
+          "gridPos": {
+            "x": 12,
+            "y": 35,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.50, sum by (le,node) (rate(sglang:kv_transfer_latency_ms_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p50"
+            },
+            {
+              "refId": "B",
+              "expr": "histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_latency_ms_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p95"
+            }
+          ]
+        },
+        {
+          "id": 155,
+          "type": "timeseries",
+          "title": "KV Transfer Speed p50 / p95 by Node",
+          "gridPos": {
+            "x": 0,
+            "y": 43,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "GBs"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.50, sum by (le,node) (rate(sglang:kv_transfer_speed_gb_s_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p50"
+            },
+            {
+              "refId": "B",
+              "expr": "histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_speed_gb_s_bucket{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m])))",
+              "legendFormat": "{{node}} p95"
+            }
+          ]
+        },
+        {
+          "id": 156,
+          "type": "timeseries",
+          "title": "Prefill PD Failures & Retries per Second",
+          "gridPos": {
+            "x": 12,
+            "y": 43,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (node) (rate(sglang:num_bootstrap_failed_reqs_total{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m]))",
+              "legendFormat": "{{node}} bootstrap failed"
+            },
+            {
+              "refId": "B",
+              "expr": "sum by (node) (rate(sglang:num_transfer_failed_reqs_total{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m]))",
+              "legendFormat": "{{node}} transfer failed"
+            },
+            {
+              "refId": "C",
+              "expr": "sum by (node) (rate(sglang:num_prefill_retries_total{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m]))",
+              "legendFormat": "{{node}} prefill retries"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": 41,
       "type": "timeseries",
       "title": "Draft Tokens & Accepted Length by Node / Role",
       "gridPos": {
         "x": 0,
-        "y": 26,
+        "y": 27,
         "w": 12,
         "h": 8
       },
@@ -356,7 +627,7 @@
       "title": "Speculative Acceptance Rate by Node / Role",
       "gridPos": {
         "x": 12,
-        "y": 26,
+        "y": 27,
         "w": 12,
         "h": 8
       },
@@ -393,7 +664,7 @@
       "title": "Queue Time p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 34,
+        "y": 35,
         "w": 12,
         "h": 8
       },
@@ -435,7 +706,7 @@
       "title": "E2E Latency p50 / p95 / p99",
       "gridPos": {
         "x": 12,
-        "y": 34,
+        "y": 35,
         "w": 12,
         "h": 8
       },
@@ -482,7 +753,7 @@
       "title": "Prefill Critical Stages p95 by Node",
       "gridPos": {
         "x": 0,
-        "y": 42,
+        "y": 43,
         "w": 12,
         "h": 8
       },
@@ -519,7 +790,7 @@
       "title": "Decode Critical Stages p95 by Node",
       "gridPos": {
         "x": 12,
-        "y": 42,
+        "y": 43,
         "w": 12,
         "h": 8
       },
@@ -556,7 +827,7 @@
       "title": "KV Cache & PD Transfer",
       "gridPos": {
         "x": 0,
-        "y": 50,
+        "y": 51,
         "w": 24,
         "h": 1
       },
@@ -578,7 +849,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 51,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -614,7 +885,7 @@
       "title": "Cache and Token Usage",
       "gridPos": {
         "x": 12,
-        "y": 51,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -674,7 +945,7 @@
       "title": "KV Tokens Available / Used / Evictable",
       "gridPos": {
         "x": 0,
-        "y": 59,
+        "y": 60,
         "w": 12,
         "h": 8
       },
@@ -721,7 +992,7 @@
       "title": "SWA Pool Tokens",
       "gridPos": {
         "x": 12,
-        "y": 59,
+        "y": 60,
         "w": 12,
         "h": 8
       },
@@ -768,7 +1039,7 @@
       "title": "Mamba Pool Tokens",
       "gridPos": {
         "x": 0,
-        "y": 67,
+        "y": 68,
         "w": 12,
         "h": 8
       },
@@ -815,7 +1086,7 @@
       "title": "PD Queue Depths",
       "gridPos": {
         "x": 12,
-        "y": 67,
+        "y": 68,
         "w": 12,
         "h": 8
       },
@@ -866,7 +1137,7 @@
       "title": "KV Transfer Speed p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 75,
+        "y": 76,
         "w": 12,
         "h": 8
       },
@@ -908,7 +1179,7 @@
       "title": "KV Transfer Latency p50 / p95",
       "gridPos": {
         "x": 12,
-        "y": 75,
+        "y": 76,
         "w": 12,
         "h": 8
       },
@@ -950,7 +1221,7 @@
       "title": "Bootstrap / Allocation Latency p95",
       "gridPos": {
         "x": 0,
-        "y": 83,
+        "y": 84,
         "w": 12,
         "h": 8
       },
@@ -992,7 +1263,7 @@
       "title": "PD Failures and Retries/s",
       "gridPos": {
         "x": 12,
-        "y": 83,
+        "y": 84,
         "w": 12,
         "h": 8
       },
@@ -1044,7 +1315,7 @@
       "title": "GPU, CPU & Memory",
       "gridPos": {
         "x": 0,
-        "y": 91,
+        "y": 92,
         "w": 24,
         "h": 1
       },
@@ -1057,7 +1328,7 @@
       "title": "GPU Utilization (Unified)",
       "gridPos": {
         "x": 0,
-        "y": 92,
+        "y": 93,
         "w": 12,
         "h": 8
       },
@@ -1101,7 +1372,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 92,
+        "y": 93,
         "w": 12,
         "h": 8
       },
@@ -1137,7 +1408,7 @@
       "title": "Scheduler Utilization / Forward Occupancy",
       "gridPos": {
         "x": 0,
-        "y": 100,
+        "y": 101,
         "w": 12,
         "h": 8
       },
@@ -1187,7 +1458,7 @@
       "title": "Capacity and Startup Memory",
       "gridPos": {
         "x": 12,
-        "y": 100,
+        "y": 101,
         "w": 12,
         "h": 8
       },
@@ -1232,7 +1503,7 @@
       "title": "CPU Utilization",
       "gridPos": {
         "x": 0,
-        "y": 108,
+        "y": 109,
         "w": 12,
         "h": 8
       },
@@ -1272,7 +1543,7 @@
       "title": "Memory Used",
       "gridPos": {
         "x": 12,
-        "y": 108,
+        "y": 109,
         "w": 12,
         "h": 8
       },
@@ -1311,7 +1582,7 @@
       "title": "Network: RDMA First",
       "gridPos": {
         "x": 0,
-        "y": 116,
+        "y": 117,
         "w": 24,
         "h": 1
       },
@@ -1331,7 +1602,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 117,
+        "y": 118,
         "w": 12,
         "h": 8
       },
@@ -1379,7 +1650,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 117,
+        "y": 118,
         "w": 12,
         "h": 8
       },

@@ -10,12 +10,20 @@ import pathlib
 
 FILTER = 'cluster=~"$cluster",node=~"$node",role=~"$role"'
 NODE_FILTER = 'cluster=~"$cluster",node=~"$node"'
+PREFILL_FILTER = 'cluster=~"$cluster",node=~"$node",role="prefill"'
 
 
 def row(panel_id: int, title: str) -> dict:
     return {"id": panel_id, "type": "row", "title": title,
             "gridPos": {"x": 0, "y": 0, "w": 24, "h": 1},
             "collapsed": False, "panels": []}
+
+
+def collapsed_row(panel_id: int, title: str, children: list[dict]) -> dict:
+    panel = row(panel_id, title)
+    panel["collapsed"] = True
+    panel["panels"] = children
+    return panel
 
 
 def stat(panel_id: int, title: str, expr: str, unit: str = "short") -> dict:
@@ -94,6 +102,34 @@ def reflow(path: pathlib.Path) -> dict:
             target(f"histogram_quantile(0.99, sum by (node,role,le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="{{node}} {{role}} p99"),
         ], "s"),
     ])
+    prefill_drilldown = [
+        timeseries(151, "Bootstrap & Allocation p95 by Node", [
+            target(f"histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_bootstrap_ms_bucket{{{PREFILL_FILTER}}}[5m])))", legend="{{node}} bootstrap p95"),
+            target(f"histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_alloc_ms_bucket{{{PREFILL_FILTER}}}[5m])))", ref="B", legend="{{node}} allocation p95"),
+        ], "ms"),
+        timeseries(152, "Forward & Chunked Prefill p95 by Node", [
+            target(f"histogram_quantile(0.95, sum by (le,node,stage) (rate(sglang:per_stage_req_latency_seconds_bucket{{{PREFILL_FILTER},stage=~\"prefill_forward|chunked_prefill\"}}[5m])))", legend="{{node}} {{stage}} p95"),
+        ], "s"),
+        timeseries(153, "Prompt Length p50 / p95 / p99 by Node", [
+            target(f"histogram_quantile(0.50, sum by (le,node) (rate(sglang:prompt_tokens_histogram_bucket{{{PREFILL_FILTER}}}[5m])))", legend="{{node}} p50"),
+            target(f"histogram_quantile(0.95, sum by (le,node) (rate(sglang:prompt_tokens_histogram_bucket{{{PREFILL_FILTER}}}[5m])))", ref="B", legend="{{node}} p95"),
+            target(f"histogram_quantile(0.99, sum by (le,node) (rate(sglang:prompt_tokens_histogram_bucket{{{PREFILL_FILTER}}}[5m])))", ref="C", legend="{{node}} p99"),
+        ], "short"),
+        timeseries(154, "KV Transfer Latency p50 / p95 by Node", [
+            target(f"histogram_quantile(0.50, sum by (le,node) (rate(sglang:kv_transfer_latency_ms_bucket{{{PREFILL_FILTER}}}[5m])))", legend="{{node}} p50"),
+            target(f"histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_latency_ms_bucket{{{PREFILL_FILTER}}}[5m])))", ref="B", legend="{{node}} p95"),
+        ], "ms"),
+        timeseries(155, "KV Transfer Speed p50 / p95 by Node", [
+            target(f"histogram_quantile(0.50, sum by (le,node) (rate(sglang:kv_transfer_speed_gb_s_bucket{{{PREFILL_FILTER}}}[5m])))", legend="{{node}} p50"),
+            target(f"histogram_quantile(0.95, sum by (le,node) (rate(sglang:kv_transfer_speed_gb_s_bucket{{{PREFILL_FILTER}}}[5m])))", ref="B", legend="{{node}} p95"),
+        ], "GBs"),
+        timeseries(156, "Prefill PD Failures & Retries per Second", [
+            target(f"sum by (node) (rate(sglang:num_bootstrap_failed_reqs_total{{{PREFILL_FILTER}}}[5m]))", legend="{{node}} bootstrap failed"),
+            target(f"sum by (node) (rate(sglang:num_transfer_failed_reqs_total{{{PREFILL_FILTER}}}[5m]))", ref="B", legend="{{node}} transfer failed"),
+            target(f"sum by (node) (rate(sglang:num_prefill_retries_total{{{PREFILL_FILTER}}}[5m]))", ref="C", legend="{{node}} prefill retries"),
+        ], "reqps"),
+    ]
+    panels.append(collapsed_row(150, "Prefill Drill-down: Bootstrap / Compute / KV Transfer", prefill_drilldown))
     panels.extend([
         timeseries(41, "Draft Tokens & Accepted Length by Node / Role", [
             target(f"max by (node,role) (sglang:spec_num_draft_tokens{{{FILTER}}})", legend="{{node}} {{role}} draft tokens"),
@@ -183,6 +219,11 @@ def reflow(path: pathlib.Path) -> dict:
         panel["gridPos"] = {"x": x, "y": y, "w": width, "h": height}
         x += width
         current_height = max(current_height, height)
+    for panel in panels:
+        if panel.get("type") == "row" and panel.get("collapsed"):
+            child_y = panel["gridPos"]["y"] + 1
+            for index, child in enumerate(panel.get("panels", [])):
+                child["gridPos"] = {"x": (index % 2) * 12, "y": child_y + (index // 2) * 8, "w": 12, "h": 8}
     dashboard["panels"] = panels
     dashboard["title"] = "Inference System Overview"
     dashboard["description"] = (

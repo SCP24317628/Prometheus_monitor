@@ -33,6 +33,15 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertNotIn("Per-stage Request Latency p95", timeseries_titles)
         self.assertIn("Prefill Critical Stages p95 by Node", timeseries_titles)
         self.assertIn("Decode Critical Stages p95 by Node", timeseries_titles)
+        drilldown = next(p for p in dashboard["panels"] if p.get("title") == "Prefill Drill-down: Bootstrap / Compute / KV Transfer")
+        self.assertTrue(drilldown["collapsed"])
+        self.assertEqual(len(drilldown["panels"]), 6)
+        self.assertEqual(
+            {p["title"] for p in drilldown["panels"]},
+            {"Bootstrap & Allocation p95 by Node", "Forward & Chunked Prefill p95 by Node",
+             "Prompt Length p50 / p95 / p99 by Node", "KV Transfer Latency p50 / p95 by Node",
+             "KV Transfer Speed p50 / p95 by Node", "Prefill PD Failures & Retries per Second"},
+        )
         by_title = {p.get("title"): p for p in dashboard["panels"]}
         self.assertEqual(by_title["Token Throughput by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
         self.assertEqual(by_title["Generation Throughput & Realtime Tokens by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")

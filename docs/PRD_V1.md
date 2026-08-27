@@ -45,6 +45,11 @@ addresses. The Router is not part of the default monitoring chain.
   and transferred/KV-arrival time. Decode waiting is already represented by the
   Queue Time chart, while `decode_prepare` and `fake_output` remain queryable raw
   metrics but are excluded from the primary dashboard.
+- Prefill provides a second-level Grafana drill-down implemented as a collapsed
+  row directly below the primary stage chart. Expanding it shows bootstrap and
+  allocation, forward/chunked-prefill, prompt-length distribution, KV-transfer
+  latency and speed, plus PD failures/retries. It is collapsed by default so the
+  overview remains readable.
 - Router metrics are optional integration data (health, ingress and routing
   errors when the Router exposes them); they are not required for worker
   latency, queue, KV, GPU or RDMA metrics and are not provisioned by default.
