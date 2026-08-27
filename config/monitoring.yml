@@ -3,10 +3,9 @@
 # 使用方式：
 #   1. 复制本文件为 config/monitoring.yml（如果本文件就是副本，可直接编辑）。
 #   2. 只修改“需要填写”的字段：public_host、节点 address、插件开关和服务 port。
-#   3. 在监控中心执行：
-#        python monitorctl.py --config config/monitoring.yml install --center
-#   4. 在每个被监控节点执行：
-#        python monitorctl.py --config config/monitoring.yml install --node
+#   3. 在中心执行 render，使用 deploy/run-center.sh 启动 center。
+#   4. 将 monitoring/generated/nodes/<节点名>.env 复制到对应节点，使用
+#        deploy/run-node-musa.sh 或 deploy/run-node-nvidia.sh 启动 node。
 #   5. 查看最终 Grafana 地址：
 #        python monitorctl.py --config config/monitoring.yml urls
 #
