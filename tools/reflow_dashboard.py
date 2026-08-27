@@ -94,11 +94,18 @@ def reflow(path: pathlib.Path) -> dict:
             target(f"histogram_quantile(0.99, sum by (node,role,le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="{{node}} {{role}} p99"),
         ], "s"),
     ])
+    panels.extend([
+        timeseries(41, "Draft Tokens & Accepted Length by Node / Role", [
+            target(f"max by (node,role) (sglang:spec_num_draft_tokens{{{FILTER}}})", legend="{{node}} {{role}} draft tokens"),
+            target(f"max by (node,role) (sglang:spec_accept_length{{{FILTER}}})", ref="B", legend="{{node}} {{role}} accepted length"),
+        ], "short"),
+        timeseries(45, "Speculative Acceptance Rate by Node / Role", [
+            target(f"max by (node,role) (sglang:spec_accept_rate{{{FILTER}}})", legend="{{node}} {{role}} acceptance rate"),
+        ], "percentunit"),
+    ])
     for title in ("Queue Time p50 / p95", "E2E Latency p50 / p95 / p99", "Per-stage Request Latency p95"):
         if title in by_title:
             panels.append(by_title[title])
-    if "Speculative Decode Acceptance" in by_title:
-        panels.append(by_title["Speculative Decode Acceptance"])
 
     # KV cache and PD transfer.
     panels.append(row(120, "KV Cache & PD Transfer"))

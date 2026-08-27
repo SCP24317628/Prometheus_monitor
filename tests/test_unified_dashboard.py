@@ -40,8 +40,12 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertEqual(by_title["Memory Used"]["fieldConfig"]["defaults"]["unit"], "bytes")
         latency_y = by_title["Latency: TTFT & E2E"]["gridPos"]["y"]
         gpu_y = by_title["GPU, CPU & Memory"]["gridPos"]["y"]
-        self.assertGreater(by_title["Speculative Decode Acceptance"]["gridPos"]["y"], latency_y)
-        self.assertLess(by_title["Speculative Decode Acceptance"]["gridPos"]["y"], gpu_y)
+        for title in ("Draft Tokens & Accepted Length by Node / Role", "Speculative Acceptance Rate by Node / Role"):
+            self.assertGreater(by_title[title]["gridPos"]["y"], latency_y)
+            self.assertLess(by_title[title]["gridPos"]["y"], gpu_y)
+        self.assertEqual(by_title["Speculative Acceptance Rate by Node / Role"]["fieldConfig"]["defaults"]["unit"], "percentunit")
+        self.assertEqual(len(by_title["Draft Tokens & Accepted Length by Node / Role"]["targets"]), 2)
+        self.assertEqual(len(by_title["Speculative Acceptance Rate by Node / Role"]["targets"]), 1)
         self.assertFalse({p.get("title") for p in dashboard["panels"] if p.get("type") == "stat"} &
                          {"Running Requests", "Prefill Inflight Requests", "Queued Requests", "Generation Throughput",
                           "TTFT Mean", "TTFT P90", "TTFT P99", "E2E Mean", "E2E P90", "E2E P99"})

@@ -309,12 +309,91 @@
       ]
     },
     {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Draft Tokens & Accepted Length by Node / Role",
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) (sglang:spec_num_draft_tokens{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} draft tokens"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) (sglang:spec_accept_length{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} accepted length"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "type": "timeseries",
+      "title": "Speculative Acceptance Rate by Node / Role",
+      "gridPos": {
+        "x": 12,
+        "y": 26,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) (sglang:spec_accept_rate{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} acceptance rate"
+        }
+      ]
+    },
+    {
       "id": 26,
       "type": "timeseries",
       "title": "Queue Time p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 26,
+        "y": 34,
         "w": 12,
         "h": 8
       },
@@ -356,7 +435,7 @@
       "title": "E2E Latency p50 / p95 / p99",
       "gridPos": {
         "x": 12,
-        "y": 26,
+        "y": 34,
         "w": 12,
         "h": 8
       },
@@ -403,7 +482,7 @@
       "title": "Per-stage Request Latency p95",
       "gridPos": {
         "x": 0,
-        "y": 34,
+        "y": 42,
         "w": 12,
         "h": 8
       },
@@ -435,57 +514,12 @@
       ]
     },
     {
-      "id": 41,
-      "type": "timeseries",
-      "title": "Speculative Decode Acceptance",
-      "gridPos": {
-        "x": 12,
-        "y": 34,
-        "w": 12,
-        "h": 8
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_rate\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} accept rate"
-        },
-        {
-          "refId": "B",
-          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_length\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} accept length"
-        },
-        {
-          "refId": "C",
-          "expr": "max by (node,role) ({__name__=\"sglang:spec_num_draft_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} draft tokens"
-        }
-      ]
-    },
-    {
       "id": 120,
       "type": "row",
       "title": "KV Cache & PD Transfer",
       "gridPos": {
         "x": 0,
-        "y": 42,
+        "y": 50,
         "w": 24,
         "h": 1
       },
@@ -507,7 +541,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 43,
+        "y": 51,
         "w": 12,
         "h": 8
       },
@@ -543,7 +577,7 @@
       "title": "Cache and Token Usage",
       "gridPos": {
         "x": 12,
-        "y": 43,
+        "y": 51,
         "w": 12,
         "h": 8
       },
@@ -603,7 +637,7 @@
       "title": "KV Tokens Available / Used / Evictable",
       "gridPos": {
         "x": 0,
-        "y": 51,
+        "y": 59,
         "w": 12,
         "h": 8
       },
@@ -650,7 +684,7 @@
       "title": "SWA Pool Tokens",
       "gridPos": {
         "x": 12,
-        "y": 51,
+        "y": 59,
         "w": 12,
         "h": 8
       },
@@ -697,7 +731,7 @@
       "title": "Mamba Pool Tokens",
       "gridPos": {
         "x": 0,
-        "y": 59,
+        "y": 67,
         "w": 12,
         "h": 8
       },
@@ -744,7 +778,7 @@
       "title": "PD Queue Depths",
       "gridPos": {
         "x": 12,
-        "y": 59,
+        "y": 67,
         "w": 12,
         "h": 8
       },
@@ -795,7 +829,7 @@
       "title": "KV Transfer Speed p50 / p95",
       "gridPos": {
         "x": 0,
-        "y": 67,
+        "y": 75,
         "w": 12,
         "h": 8
       },
@@ -837,7 +871,7 @@
       "title": "KV Transfer Latency p50 / p95",
       "gridPos": {
         "x": 12,
-        "y": 67,
+        "y": 75,
         "w": 12,
         "h": 8
       },
@@ -879,7 +913,7 @@
       "title": "Bootstrap / Allocation Latency p95",
       "gridPos": {
         "x": 0,
-        "y": 75,
+        "y": 83,
         "w": 12,
         "h": 8
       },
@@ -921,7 +955,7 @@
       "title": "PD Failures and Retries/s",
       "gridPos": {
         "x": 12,
-        "y": 75,
+        "y": 83,
         "w": 12,
         "h": 8
       },
@@ -973,7 +1007,7 @@
       "title": "GPU, CPU & Memory",
       "gridPos": {
         "x": 0,
-        "y": 83,
+        "y": 91,
         "w": 24,
         "h": 1
       },
@@ -986,7 +1020,7 @@
       "title": "GPU Utilization (Unified)",
       "gridPos": {
         "x": 0,
-        "y": 84,
+        "y": 92,
         "w": 12,
         "h": 8
       },
@@ -1030,7 +1064,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 84,
+        "y": 92,
         "w": 12,
         "h": 8
       },
@@ -1066,7 +1100,7 @@
       "title": "Scheduler Utilization / Forward Occupancy",
       "gridPos": {
         "x": 0,
-        "y": 92,
+        "y": 100,
         "w": 12,
         "h": 8
       },
@@ -1116,7 +1150,7 @@
       "title": "Capacity and Startup Memory",
       "gridPos": {
         "x": 12,
-        "y": 92,
+        "y": 100,
         "w": 12,
         "h": 8
       },
@@ -1161,7 +1195,7 @@
       "title": "CPU Utilization",
       "gridPos": {
         "x": 0,
-        "y": 100,
+        "y": 108,
         "w": 12,
         "h": 8
       },
@@ -1201,7 +1235,7 @@
       "title": "Memory Used",
       "gridPos": {
         "x": 12,
-        "y": 100,
+        "y": 108,
         "w": 12,
         "h": 8
       },
@@ -1240,7 +1274,7 @@
       "title": "Network: RDMA First",
       "gridPos": {
         "x": 0,
-        "y": 108,
+        "y": 116,
         "w": 24,
         "h": 1
       },
@@ -1260,7 +1294,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 109,
+        "y": 117,
         "w": 12,
         "h": 8
       },
@@ -1308,7 +1342,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 109,
+        "y": 117,
         "w": 12,
         "h": 8
       },

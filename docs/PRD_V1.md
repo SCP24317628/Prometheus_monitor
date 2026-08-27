@@ -37,6 +37,9 @@ addresses. The Router is not part of the default monitoring chain.
 - Token throughput is displayed as `tok/s`. It must not be labeled TOPS or
   TFLOPS: GPU floating-point throughput requires hardware FLOP counters that
   are not exposed by the current SGLang/MUSA exporters.
+- Speculative decoding is displayed in two adjacent trends: draft-token count
+  together with accepted length, and acceptance rate in a separate percentage
+  chart. All three series retain `node` and `role` for worker-level diagnosis.
 - Router metrics are optional integration data (health, ingress and routing
   errors when the Router exposes them); they are not required for worker
   latency, queue, KV, GPU or RDMA metrics and are not provisioned by default.
