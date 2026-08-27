@@ -76,18 +76,18 @@ def reflow(path: pathlib.Path) -> dict:
     # ITL cards are intentionally not populated with misleading No-data queries.
     panels.append(row(110, "Latency: TTFT & E2E"))
     panels.extend([
-        timeseries(111, "TTFT Trend (Mean / P90 / P99)", [
-            target(f"sum(rate(sglang:time_to_first_token_seconds_sum{{{FILTER}}}[5m])) / sum(rate(sglang:time_to_first_token_seconds_count{{{FILTER}}}[5m]))", legend="mean"),
-            target(f"histogram_quantile(0.90, sum by (le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", ref="B", legend="p90"),
-            target(f"histogram_quantile(0.99, sum by (le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="p99"),
+        timeseries(111, "TTFT Trend by Node / Role (Mean / P90 / P99)", [
+            target(f"sum by (node,role) (rate(sglang:time_to_first_token_seconds_sum{{{FILTER}}}[5m])) / sum by (node,role) (rate(sglang:time_to_first_token_seconds_count{{{FILTER}}}[5m]))", legend="{{node}} {{role}} mean"),
+            target(f"histogram_quantile(0.90, sum by (node,role,le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", ref="B", legend="{{node}} {{role}} p90"),
+            target(f"histogram_quantile(0.99, sum by (node,role,le) (rate(sglang:time_to_first_token_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="{{node}} {{role}} p99"),
         ], "s"),
-        timeseries(112, "E2E Trend (Mean / P90 / P99)", [
-            target(f"sum(rate(sglang:e2e_request_latency_seconds_sum{{{FILTER}}}[5m])) / sum(rate(sglang:e2e_request_latency_seconds_count{{{FILTER}}}[5m]))", legend="mean"),
-            target(f"histogram_quantile(0.90, sum by (le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="B", legend="p90"),
-            target(f"histogram_quantile(0.99, sum by (le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="p99"),
+        timeseries(112, "E2E Trend by Node / Role (Mean / P90 / P99)", [
+            target(f"sum by (node,role) (rate(sglang:e2e_request_latency_seconds_sum{{{FILTER}}}[5m])) / sum by (node,role) (rate(sglang:e2e_request_latency_seconds_count{{{FILTER}}}[5m]))", legend="{{node}} {{role}} mean"),
+            target(f"histogram_quantile(0.90, sum by (node,role,le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="B", legend="{{node}} {{role}} p90"),
+            target(f"histogram_quantile(0.99, sum by (node,role,le) (rate(sglang:e2e_request_latency_seconds_bucket{{{FILTER}}}[5m])))", ref="C", legend="{{node}} {{role}} p99"),
         ], "s"),
     ])
-    for title in ("Time to First Token", "Queue Time p50 / p95", "E2E Latency p50 / p95 / p99", "Per-stage Request Latency p95"):
+    for title in ("Queue Time p50 / p95", "E2E Latency p50 / p95 / p99", "Per-stage Request Latency p95"):
         if title in by_title:
             panels.append(by_title[title])
 

@@ -25,8 +25,9 @@ class UnifiedDashboardTest(unittest.TestCase):
         timeseries_titles = {p.get("title") for p in dashboard["panels"] if p.get("type") == "timeseries"}
         self.assertIn("Request Concurrency & Queue", timeseries_titles)
         self.assertIn("Generation Throughput", timeseries_titles)
-        self.assertIn("TTFT Trend (Mean / P90 / P99)", timeseries_titles)
-        self.assertIn("E2E Trend (Mean / P90 / P99)", timeseries_titles)
+        self.assertIn("TTFT Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
+        self.assertIn("E2E Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
+        self.assertNotIn("Time to First Token", timeseries_titles)
         self.assertFalse({p.get("title") for p in dashboard["panels"] if p.get("type") == "stat"} &
                          {"Running Requests", "Prefill Inflight Requests", "Queued Requests", "Generation Throughput",
                           "TTFT Mean", "TTFT P90", "TTFT P99", "E2E Mean", "E2E P90", "E2E P99"})

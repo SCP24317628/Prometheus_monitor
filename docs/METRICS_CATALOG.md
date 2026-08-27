@@ -67,6 +67,11 @@ sglang:per_stage_req_latency_seconds_sum
 当前 77/78 使用的 SGLang 版本没有暴露 `inter_token_latency` 系列。因此 TPOT/ITL
 不能由当前 exporter 真实计算；不能用吞吐量或日志行数代替。
 
+在当前 PD 部署中，TTFT/E2E 是由完成请求生命周期的 worker 记录的，实际表现为
+`role=decode` 的序列；Prefill 负责计算和传输 KV，不一定完成整个请求，因此
+72/73 Prefill 没有这两个 histogram 是预期行为。看板查询必须保留 `node` 和
+`role` 标签，不能把所有 worker 聚合成一条无来源的曲线。
+
 ### 吞吐、Token 和请求长度
 
 ```text
