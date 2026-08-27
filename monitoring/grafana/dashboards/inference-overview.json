@@ -494,6 +494,51 @@
       ]
     },
     {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Speculative Decode Acceptance",
+      "gridPos": {
+        "x": 12,
+        "y": 42,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_rate\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} accept rate"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_length\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} accept length"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) ({__name__=\"sglang:spec_num_draft_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} draft tokens"
+        }
+      ]
+    },
+    {
       "id": 120,
       "type": "row",
       "title": "KV Cache & PD Transfer",
@@ -1125,57 +1170,12 @@
       ]
     },
     {
-      "id": 41,
-      "type": "timeseries",
-      "title": "Speculative Decode Acceptance",
-      "gridPos": {
-        "x": 12,
-        "y": 100,
-        "w": 12,
-        "h": 8
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_rate\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} accept rate"
-        },
-        {
-          "refId": "B",
-          "expr": "max by (node,role) ({__name__=\"sglang:spec_accept_length\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} accept length"
-        },
-        {
-          "refId": "C",
-          "expr": "max by (node,role) ({__name__=\"sglang:spec_num_draft_tokens\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} draft tokens"
-        }
-      ]
-    },
-    {
       "id": 42,
       "type": "timeseries",
       "title": "Capacity and Startup Memory",
       "gridPos": {
-        "x": 0,
-        "y": 108,
+        "x": 12,
+        "y": 100,
         "w": 12,
         "h": 8
       },
@@ -1219,7 +1219,7 @@
       "type": "timeseries",
       "title": "CPU Utilization",
       "gridPos": {
-        "x": 12,
+        "x": 0,
         "y": 108,
         "w": 12,
         "h": 8
@@ -1229,7 +1229,12 @@
         "uid": "prometheus"
       },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 1
+        },
         "overrides": []
       },
       "options": {
@@ -1254,8 +1259,8 @@
       "type": "timeseries",
       "title": "Memory Used",
       "gridPos": {
-        "x": 0,
-        "y": 116,
+        "x": 12,
+        "y": 108,
         "w": 12,
         "h": 8
       },
@@ -1264,7 +1269,11 @@
         "uid": "prometheus"
       },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "decimals": 1
+        },
         "overrides": []
       },
       "options": {
@@ -1290,7 +1299,7 @@
       "title": "Network: RDMA First",
       "gridPos": {
         "x": 0,
-        "y": 124,
+        "y": 116,
         "w": 24,
         "h": 1
       },
@@ -1310,7 +1319,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 125,
+        "y": 117,
         "w": 12,
         "h": 8
       },
@@ -1358,7 +1367,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 125,
+        "y": 117,
         "w": 12,
         "h": 8
       },

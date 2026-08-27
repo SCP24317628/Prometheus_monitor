@@ -90,6 +90,8 @@ def reflow(path: pathlib.Path) -> dict:
     for title in ("Queue Time p50 / p95", "E2E Latency p50 / p95 / p99", "Per-stage Request Latency p95"):
         if title in by_title:
             panels.append(by_title[title])
+    if "Speculative Decode Acceptance" in by_title:
+        panels.append(by_title["Speculative Decode Acceptance"])
 
     # KV cache and PD transfer.
     panels.append(row(120, "KV Cache & PD Transfer"))
@@ -109,13 +111,20 @@ def reflow(path: pathlib.Path) -> dict:
     gpu_utilization["title"] = "GPU Utilization (Unified)"
     panels.append(gpu_utilization)
     for title in ("GPU Memory Used", "Scheduler Utilization / Forward Occupancy",
-                  "Speculative Decode Acceptance", "Capacity and Startup Memory"):
+                  "Capacity and Startup Memory"):
         if title in by_title:
             panels.append(by_title[title])
     panels.extend([
-        timeseries(43, "CPU Utilization", [target(f"100 - (avg by (node) (rate(node_cpu_seconds_total{{mode=\"idle\",{NODE_FILTER}}}[5m])) * 100)", legend="{{node}}")]),
-        timeseries(44, "Memory Used", [target(f"node_memory_MemTotal_bytes{{{NODE_FILTER}}} - node_memory_MemAvailable_bytes{{{NODE_FILTER}}}", legend="{{node}}")]),
+        timeseries(43, "CPU Utilization", [target(f"100 - (avg by (node) (rate(node_cpu_seconds_total{{mode=\"idle\",{NODE_FILTER}}}[5m])) * 100)", legend="{{node}}")], "percent"),
+        timeseries(44, "Memory Used", [target(f"node_memory_MemTotal_bytes{{{NODE_FILTER}}} - node_memory_MemAvailable_bytes{{{NODE_FILTER}}}", legend="{{node}}")], "bytes"),
     ])
+    # CPU is already expressed as 0..100; bytes lets Grafana render GiB/TiB
+    # automatically instead of showing unreadable raw integer byte counts.
+    for panel in panels[-2:]:
+        if panel["title"] == "CPU Utilization":
+            panel["fieldConfig"]["defaults"].update({"min": 0, "max": 100, "decimals": 1})
+        elif panel["title"] == "Memory Used":
+            panel["fieldConfig"]["defaults"].update({"min": 0, "decimals": 1})
 
     # RDMA is intentionally before Ethernet.  The exporter exposes bytes/s,
     # not physical link capacity, so no fabricated percentage is shown.

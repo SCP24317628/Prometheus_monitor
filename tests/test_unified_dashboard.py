@@ -28,6 +28,14 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertIn("TTFT Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
         self.assertIn("E2E Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
         self.assertNotIn("Time to First Token", timeseries_titles)
+        by_title = {p.get("title"): p for p in dashboard["panels"]}
+        self.assertEqual(by_title["CPU Utilization"]["fieldConfig"]["defaults"]["unit"], "percent")
+        self.assertEqual(by_title["CPU Utilization"]["fieldConfig"]["defaults"]["max"], 100)
+        self.assertEqual(by_title["Memory Used"]["fieldConfig"]["defaults"]["unit"], "bytes")
+        latency_y = by_title["Latency: TTFT & E2E"]["gridPos"]["y"]
+        gpu_y = by_title["GPU, CPU & Memory"]["gridPos"]["y"]
+        self.assertGreater(by_title["Speculative Decode Acceptance"]["gridPos"]["y"], latency_y)
+        self.assertLess(by_title["Speculative Decode Acceptance"]["gridPos"]["y"], gpu_y)
         self.assertFalse({p.get("title") for p in dashboard["panels"] if p.get("type") == "stat"} &
                          {"Running Requests", "Prefill Inflight Requests", "Queued Requests", "Generation Throughput",
                           "TTFT Mean", "TTFT P90", "TTFT P99", "E2E Mean", "E2E P90", "E2E P99"})
