@@ -24,6 +24,10 @@ addresses. The Router is not part of the default monitoring chain.
   automatically adopt arbitrary open ports. A future discovery mode may report
   candidates, but a user must confirm model, deployment and Prefill/Decode role
   before a target is added.
+- A deployment may contain multiple Prefill and/or Decode workers. Each worker
+  is an independent Prometheus target, even when several workers share the same
+  metrics port number. The `role` label is mandatory for latency and queue
+  comparisons; the product must never infer P/D role from the port number.
 - Router metrics are optional integration data (health, ingress and routing
   errors when the Router exposes them); they are not required for worker
   latency, queue, KV, GPU or RDMA metrics and are not provisioned by default.
