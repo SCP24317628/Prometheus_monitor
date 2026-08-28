@@ -25,9 +25,9 @@ New-Item -ItemType Directory -Path (Join-Path $packageDir "source") -Force | Out
 New-Item -ItemType Directory -Path (Join-Path $packageDir "product") -Force | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $repoRoot "VERSION") -Destination $packageDir
-Copy-Item -LiteralPath (Join-Path $repoRoot "README.md") -Destination $packageDir
-Copy-Item -LiteralPath (Join-Path $repoRoot "INSTALL_QUICKSTART.md") -Destination $packageDir
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot "README.md") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "INSTALL_OFFLINE.md") -Destination $packageDir
+Copy-Item -LiteralPath (Join-Path $repoRoot "docs/RELEASE_NOTES_0.1.5.md") -Destination (Join-Path $packageDir "RELEASE_NOTES.md")
 Copy-Item -LiteralPath $center -Destination (Join-Path $packageDir "images/inference-monitor-center-$Version.tar")
 Copy-Item -LiteralPath $musa -Destination (Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar")
 if ($nvidia) {

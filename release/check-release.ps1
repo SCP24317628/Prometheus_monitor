@@ -48,7 +48,7 @@ try {
 if ($validatePackage) {
     if (-not (Test-Path -LiteralPath $PackageDir)) { throw "Package directory not found: $PackageDir" }
     $requiredPackage = @(
-        "VERSION", "INSTALL_QUICKSTART.md", "INSTALL_OFFLINE.md",
+        "VERSION", "README.md", "INSTALL_OFFLINE.md", "RELEASE_NOTES.md",
         "release-manifest.json", "SHA256SUMS",
         "source/inference-monitor-source-$Version.zip",
         "product/monitorctl.py", "product/config/monitoring.yml",

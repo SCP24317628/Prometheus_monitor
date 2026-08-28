@@ -4,7 +4,7 @@
 
 ```text
 inference-monitor-offline-<VERSION>/
-├── INSTALL_QUICKSTART.md
+├── README.md / RELEASE_NOTES.md
 ├── INSTALL_OFFLINE.md
 ├── release-manifest.json / SHA256SUMS
 ├── product/
@@ -19,7 +19,8 @@ inference-monitor-offline-<VERSION>/
 ```
 
 用户不需要执行 `docker build`，只需 `docker load` 后按
-`INSTALL_QUICKSTART.md` 启动 center 和 node。镜像、配置和源码版本必须一致。
+`INSTALL_OFFLINE.md`进入`product/`，再按`product/INSTALL_QUICKSTART.md`启动
+center和node。镜像、配置和源码版本必须一致。
 
 发布者使用 `build-offline-package.ps1` 生成目录、tar、manifest和SHA256：
 
