@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-IMAGE=${NODE_IMAGE:-inference-monitor-node-nvidia:0.1.5}
+IMAGE=${NODE_IMAGE:-inference-monitor-node-nvidia:0.1.6}
 NODE_ENV=${NODE_ENV:-}
 if [[ -n "$NODE_ENV" ]]; then
   [[ -r "$NODE_ENV" ]] || { echo "Node env file not readable: $NODE_ENV" >&2; exit 2; }

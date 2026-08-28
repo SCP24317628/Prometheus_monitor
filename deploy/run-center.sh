@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-IMAGE=${CENTER_IMAGE:-inference-monitor-center:0.1.5}
+IMAGE=${CENTER_IMAGE:-inference-monitor-center:0.1.6}
 CONFIG=${CONFIG:-$ROOT_DIR/monitoring/generated/prometheus.yml}
 RULES=${RULES:-$ROOT_DIR/monitoring/prometheus/rules}
 DATA=${DATA:-$ROOT_DIR/runtime/prometheus}

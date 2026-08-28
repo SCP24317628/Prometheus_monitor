@@ -5,21 +5,21 @@
 ## 构建镜像
 
 ```bash
-REGISTRY=local TAG=0.1.5 ./deploy/build-images.sh
+REGISTRY=local TAG=0.1.6 ./deploy/build-images.sh
 ```
 
 构建结果：
 
 ```text
-registry.example.com/monitoring/inference-monitor-center:0.1.5
-registry.example.com/monitoring/inference-monitor-node-musa:0.1.5
+registry.example.com/monitoring/inference-monitor-center:0.1.6
+registry.example.com/monitoring/inference-monitor-node-musa:0.1.6
 ```
 
 ## 推送镜像
 
 ```bash
-docker push registry.example.com/monitoring/inference-monitor-center:0.1.5
-docker push registry.example.com/monitoring/inference-monitor-node-musa:0.1.5
+docker push registry.example.com/monitoring/inference-monitor-center:0.1.6
+docker push registry.example.com/monitoring/inference-monitor-node-musa:0.1.6
 ```
 
 发布说明必须给最终用户真实 registry 或离线 tar 和不可变版本，不能要求最终用户执行 `docker build`。
@@ -81,6 +81,6 @@ python -m unittest discover -s tests -v
 ```
 
 ```bash
-git tag v0.1.5
-git push origin v0.1.5
+git tag v0.1.6
+git push origin v0.1.6
 ```

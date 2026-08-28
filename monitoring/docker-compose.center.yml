@@ -1,6 +1,6 @@
 services:
   center:
-    image: inference-monitor-center:${MONITOR_VERSION:-0.1.5}
+    image: inference-monitor-center:${MONITOR_VERSION:-0.1.6}
     container_name: inference-monitor-center
     restart: unless-stopped
     runtime: runc

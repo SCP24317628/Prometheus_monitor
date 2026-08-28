@@ -27,7 +27,9 @@ New-Item -ItemType Directory -Path (Join-Path $packageDir "product") -Force | Ou
 Copy-Item -LiteralPath (Join-Path $repoRoot "VERSION") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "README.md") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "INSTALL_OFFLINE.md") -Destination $packageDir
-Copy-Item -LiteralPath (Join-Path $repoRoot "docs/RELEASE_NOTES_0.1.5.md") -Destination (Join-Path $packageDir "RELEASE_NOTES.md")
+$releaseNotes = Join-Path $repoRoot "docs/RELEASE_NOTES_$Version.md"
+if (-not (Test-Path -LiteralPath $releaseNotes)) { throw "Missing release notes: $releaseNotes" }
+Copy-Item -LiteralPath $releaseNotes -Destination (Join-Path $packageDir "RELEASE_NOTES.md")
 Copy-Item -LiteralPath $center -Destination (Join-Path $packageDir "images/inference-monitor-center-$Version.tar")
 Copy-Item -LiteralPath $musa -Destination (Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar")
 if ($nvidia) {
@@ -67,13 +69,13 @@ $manifest = [ordered]@{
             image = "inference-monitor-center:$Version"
             file = "images/inference-monitor-center-$Version.tar"
             sha256 = (Get-FileHash -LiteralPath $centerPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
-            provenance = "offline repack of the validated 0.1.4 base with the 0.1.5 Grafana provisioning and center entrypoint"
+            provenance = "release image artifact supplied to the offline packager and verified by SHA256"
         },
         [ordered]@{
             image = "inference-monitor-node-musa:$Version"
             file = "images/inference-monitor-node-musa-$Version.tar"
             sha256 = (Get-FileHash -LiteralPath $musaPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
-            provenance = "runtime files verified unchanged from the validated 0.1.4 image and retagged as 0.1.5"
+            provenance = "release image artifact supplied to the offline packager and verified by SHA256"
         }
     )
     nvidia_image_bundled = [bool]$nvidia
