@@ -64,6 +64,12 @@ if ($validatePackage) {
     $manifest = Get-Content -LiteralPath (Join-Path $PackageDir "release-manifest.json") -Raw | ConvertFrom-Json
     if ($manifest.version -ne $Version) { throw "Manifest version mismatch" }
     if ($manifest.default_dcgm_enabled -ne $false) { throw "DCGM must be disabled by default" }
+    foreach ($artifact in $manifest.image_artifacts) {
+        $imagePath = Join-Path $PackageDir $artifact.file
+        if (-not (Test-Path -LiteralPath $imagePath)) { throw "Manifest image file missing: $($artifact.file)" }
+        $actual = (Get-FileHash -LiteralPath $imagePath -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($actual -ne $artifact.sha256) { throw "Manifest image hash mismatch: $($artifact.file)" }
+    }
 }
 
 Write-Host "Release validation passed: $Version"

@@ -33,6 +33,9 @@ Copy-Item -LiteralPath $musa -Destination (Join-Path $packageDir "images/inferen
 if ($nvidia) {
     Copy-Item -LiteralPath $nvidia -Destination (Join-Path $packageDir "images/inference-monitor-node-nvidia-$Version.tar")
 }
+$centerPackageTar = Join-Path $packageDir "images/inference-monitor-center-$Version.tar"
+$musaPackageTar = Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar"
+$nvidiaPackageTar = Join-Path $packageDir "images/inference-monitor-node-nvidia-$Version.tar"
 
 $sourceZip = Join-Path $packageDir "source/inference-monitor-source-$Version.zip"
 $sourceTar = Join-Path $env:TEMP "inference-monitor-source-$Version.tar"
@@ -59,12 +62,34 @@ $manifest = [ordered]@{
     default_router_monitoring = $false
     topology = "one center container plus one node container per monitored host"
     bundled_images = @("inference-monitor-center:$Version", "inference-monitor-node-musa:$Version")
+    image_artifacts = @(
+        [ordered]@{
+            image = "inference-monitor-center:$Version"
+            file = "images/inference-monitor-center-$Version.tar"
+            sha256 = (Get-FileHash -LiteralPath $centerPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
+            provenance = "offline repack of the validated 0.1.4 base with the 0.1.5 Grafana provisioning and center entrypoint"
+        },
+        [ordered]@{
+            image = "inference-monitor-node-musa:$Version"
+            file = "images/inference-monitor-node-musa-$Version.tar"
+            sha256 = (Get-FileHash -LiteralPath $musaPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
+            provenance = "runtime files verified unchanged from the validated 0.1.4 image and retagged as 0.1.5"
+        }
+    )
     nvidia_image_bundled = [bool]$nvidia
     nvidia_delivery_note = if ($nvidia) { "bundled" } else { "Dockerfile and run script are included in source; build separately for the target NVIDIA environment" }
     credentials_included = $false
     runtime_data_included = $false
 }
-if ($nvidia) { $manifest.bundled_images += "inference-monitor-node-nvidia:$Version" }
+if ($nvidia) {
+    $manifest.bundled_images += "inference-monitor-node-nvidia:$Version"
+    $manifest.image_artifacts += [ordered]@{
+        image = "inference-monitor-node-nvidia:$Version"
+        file = "images/inference-monitor-node-nvidia-$Version.tar"
+        sha256 = (Get-FileHash -LiteralPath $nvidiaPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
+        provenance = "built from the bundled node-nvidia Dockerfile for the target NVIDIA environment"
+    }
+}
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $packageDir "release-manifest.json") -Encoding utf8
 
 $sumFile = Join-Path $packageDir "SHA256SUMS"
