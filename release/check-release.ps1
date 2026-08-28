@@ -5,11 +5,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
+$validatePackage = [bool]$PackageDir
 if (-not $Version) {
     $Version = (Get-Content -LiteralPath (Join-Path $repoRoot "VERSION") -Raw).Trim()
-}
-if (-not $PackageDir) {
-    $PackageDir = Join-Path $PSScriptRoot "inference-monitor-offline-$Version"
 }
 
 $requiredSource = @(
@@ -47,11 +45,14 @@ try {
     Pop-Location
 }
 
-if (Test-Path -LiteralPath $PackageDir) {
+if ($validatePackage) {
+    if (-not (Test-Path -LiteralPath $PackageDir)) { throw "Package directory not found: $PackageDir" }
     $requiredPackage = @(
         "VERSION", "INSTALL_QUICKSTART.md", "INSTALL_OFFLINE.md",
         "release-manifest.json", "SHA256SUMS",
         "source/inference-monitor-source-$Version.zip",
+        "product/monitorctl.py", "product/config/monitoring.yml",
+        "product/deploy/run-center.sh", "product/deploy/run-node-musa.sh",
         "images/inference-monitor-center-$Version.tar",
         "images/inference-monitor-node-musa-$Version.tar"
     )

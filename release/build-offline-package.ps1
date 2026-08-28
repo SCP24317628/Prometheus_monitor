@@ -22,6 +22,7 @@ if (Test-Path -LiteralPath $packageDir) { Remove-Item -LiteralPath $packageDir -
 if (Test-Path -LiteralPath $archive) { Remove-Item -LiteralPath $archive -Force }
 New-Item -ItemType Directory -Path (Join-Path $packageDir "images") -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $packageDir "source") -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $packageDir "product") -Force | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $repoRoot "VERSION") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $repoRoot "README.md") -Destination $packageDir
@@ -34,13 +35,19 @@ if ($nvidia) {
 }
 
 $sourceZip = Join-Path $packageDir "source/inference-monitor-source-$Version.zip"
+$sourceTar = Join-Path $env:TEMP "inference-monitor-source-$Version.tar"
 Push-Location $repoRoot
 try {
     git archive --format=zip --output="$sourceZip" HEAD
     if ($LASTEXITCODE -ne 0) { throw "git archive failed" }
+    git archive --format=tar --output="$sourceTar" HEAD
+    if ($LASTEXITCODE -ne 0) { throw "git archive tar failed" }
+    tar -xf "$sourceTar" -C (Join-Path $packageDir "product")
+    if ($LASTEXITCODE -ne 0) { throw "source extraction failed" }
     $commit = (git rev-parse HEAD).Trim()
 } finally {
     Pop-Location
+    Remove-Item -LiteralPath $sourceTar -Force -ErrorAction SilentlyContinue
 }
 
 $manifest = [ordered]@{

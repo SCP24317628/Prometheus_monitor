@@ -13,6 +13,13 @@ sha256sum -c SHA256SUMS
 再查看 `release-manifest.json`，确认版本、Git提交、实际捆绑镜像，以及NVIDIA镜像
 是否包含。manifest未声明的镜像不属于本次交付物。
 
+`product/`是可以直接执行的产品目录，`source/`中的zip是同一Git提交的源码归档。
+以下命令均在`product/`目录执行：
+
+```bash
+cd product
+```
+
 ## 1. 网络和机器准备
 
 - 一台中心机器运行一个 `inference-monitor-center`。
@@ -39,7 +46,7 @@ python3 monitorctl.py --config config/monitoring.yml urls
 ## 3. 加载和启动中心
 
 ```bash
-docker load -i images/inference-monitor-center-<VERSION>.tar
+docker load -i ../images/inference-monitor-center-<VERSION>.tar
 CENTER_IMAGE=inference-monitor-center:<VERSION> \
 CONFIG="$PWD/monitoring/generated/prometheus.yml" \
 ./deploy/run-center.sh
@@ -50,7 +57,7 @@ CONFIG="$PWD/monitoring/generated/prometheus.yml" \
 将对应 node tar 和该节点 `.env` 复制到节点：
 
 ```bash
-docker load -i images/inference-monitor-node-musa-<VERSION>.tar
+docker load -i ../images/inference-monitor-node-musa-<VERSION>.tar
 NODE_IMAGE=inference-monitor-node-musa:<VERSION> \
 NODE_ENV="$PWD/monitoring/generated/nodes/<节点名>.env" \
 ./deploy/run-node-musa.sh

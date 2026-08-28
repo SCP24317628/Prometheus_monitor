@@ -3,11 +3,15 @@
 这是面向最终用户的离线交付物。包内应包含：
 
 ```text
-inference-monitor-<VERSION>/
+inference-monitor-offline-<VERSION>/
 ├── INSTALL_QUICKSTART.md
-├── monitorctl.py / requirements.txt
-├── config/monitoring.yml
-├── monitoring/ / deploy/
+├── INSTALL_OFFLINE.md
+├── release-manifest.json / SHA256SUMS
+├── product/
+│   ├── monitorctl.py / requirements.txt
+│   ├── config/monitoring.yml
+│   └── monitoring/ / deploy/
+├── source/inference-monitor-source-<VERSION>.zip
 └── images/
     ├── inference-monitor-center-<VERSION>.tar
     ├── inference-monitor-node-musa-<VERSION>.tar
