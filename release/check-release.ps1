@@ -1,24 +1,68 @@
-[CmdletBinding()]
-param([string]$Version = "0.1.4")
+param(
+    [string]$Version = "",
+    [string]$PackageDir = ""
+)
+
 $ErrorActionPreference = "Stop"
-$root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$required = @(
-  "monitorctl.py", "requirements.txt", "config/monitoring.yml",
-  "images/center/Dockerfile", "images/node-musa/Dockerfile",
-  "deploy/run-center.sh", "deploy/run-node-musa.sh",
-  "monitoring/grafana/dashboards/inference-overview.json",
-  "monitoring/grafana/fragments/sglang-detailed.fragment.json"
-)
-$missing = @($required | Where-Object { -not (Test-Path (Join-Path $root $_)) })
-$imageTars = @(
-  (Join-Path $root "images/inference-monitor-center-$Version.tar"),
-  (Join-Path $root "images/inference-monitor-node-musa-$Version.tar")
-)
-Write-Host "Source checks:"
-if ($missing.Count) { $missing | ForEach-Object { Write-Host "MISSING $_" } } else { Write-Host "OK source files" }
-Write-Host "Image checks:"
-foreach ($tar in $imageTars) {
-  if (Test-Path $tar) { Write-Host "OK $tar" } else { Write-Host "MISSING $tar" }
+$repoRoot = Split-Path -Parent $PSScriptRoot
+if (-not $Version) {
+    $Version = (Get-Content -LiteralPath (Join-Path $repoRoot "VERSION") -Raw).Trim()
 }
-if ($missing.Count -or @($imageTars | Where-Object { -not (Test-Path $_) }).Count) { exit 2 }
-Write-Host "RELEASE_READY"
+if (-not $PackageDir) {
+    $PackageDir = Join-Path $PSScriptRoot "inference-monitor-offline-$Version"
+}
+
+$requiredSource = @(
+    "VERSION", "README.md", "INSTALL_QUICKSTART.md", "config/monitoring.yml",
+    "deploy/run-center.sh", "deploy/run-node-musa.sh", "deploy/run-node-nvidia.sh",
+    "monitoring/grafana/dashboards/inference-overview.json",
+    "docs/PRD_V1.md", "docs/METRICS_CATALOG.md"
+)
+foreach ($relative in $requiredSource) {
+    if (-not (Test-Path -LiteralPath (Join-Path $repoRoot $relative))) {
+        throw "Missing source delivery file: $relative"
+    }
+}
+
+$versionReferences = @(
+    "deploy/run-center.sh", "deploy/run-node-musa.sh", "deploy/run-node-nvidia.sh",
+    "monitoring/docker-compose.center.yml", "monitoring/docker-compose.node.yml"
+)
+foreach ($relative in $versionReferences) {
+    $text = Get-Content -LiteralPath (Join-Path $repoRoot $relative) -Raw
+    if ($text -notmatch [regex]::Escape($Version)) {
+        throw "$relative does not reference release version $Version"
+    }
+}
+
+Push-Location $repoRoot
+try {
+    python -m unittest discover -s tests -p "test_*.py"
+    if ($LASTEXITCODE -ne 0) { throw "Unit tests failed" }
+    python tools/render_config.py config/monitoring.yml --output "$env:TEMP/inference-monitor-prometheus-$Version.yml" --env-output "$env:TEMP/inference-monitor-env-$Version"
+    if ($LASTEXITCODE -ne 0) { throw "Config rendering failed" }
+    git diff --check
+    if ($LASTEXITCODE -ne 0) { throw "git diff --check failed" }
+} finally {
+    Pop-Location
+}
+
+if (Test-Path -LiteralPath $PackageDir) {
+    $requiredPackage = @(
+        "VERSION", "INSTALL_QUICKSTART.md", "INSTALL_OFFLINE.md",
+        "release-manifest.json", "SHA256SUMS",
+        "source/inference-monitor-source-$Version.zip",
+        "images/inference-monitor-center-$Version.tar",
+        "images/inference-monitor-node-musa-$Version.tar"
+    )
+    foreach ($relative in $requiredPackage) {
+        if (-not (Test-Path -LiteralPath (Join-Path $PackageDir $relative))) {
+            throw "Missing package artifact: $relative"
+        }
+    }
+    $manifest = Get-Content -LiteralPath (Join-Path $PackageDir "release-manifest.json") -Raw | ConvertFrom-Json
+    if ($manifest.version -ne $Version) { throw "Manifest version mismatch" }
+    if ($manifest.default_dcgm_enabled -ne $false) { throw "DCGM must be disabled by default" }
+}
+
+Write-Host "Release validation passed: $Version"

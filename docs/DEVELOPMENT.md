@@ -64,3 +64,23 @@ python -m unittest discover -s tests -v
 - `deploy/build-images.sh`：发布构建入口。
 - `monitoring/docker-compose.*.yml`：开发、调试和拆分组件部署。
 - `deploy/dsv4/`：测试环境样例，不属于产品发布物。
+
+## 正式离线发布
+
+1. 更新`VERSION`和所有默认镜像标签。
+2. 构建并保存center、node-musa，以及需要交付的node-nvidia镜像。
+3. 使用`release/build-offline-package.ps1`生成离线包。
+4. 使用`release/check-release.ps1`验证源码、配置、测试、manifest和包结构。
+5. 核对`SHA256SUMS`及外层tar的`.sha256`后再创建Git tag。
+
+```powershell
+.\release\build-offline-package.ps1 `
+  -CenterImageTar <center-image.tar> `
+  -MusaImageTar <node-musa-image.tar> `
+  -NvidiaImageTar <node-nvidia-image.tar>
+```
+
+```bash
+git tag v0.1.5
+git push origin v0.1.5
+```

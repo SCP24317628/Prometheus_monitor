@@ -3,6 +3,16 @@
 本文面向最终用户。离线包必须包含同一个 `<VERSION>` 的源码配置文件和镜像 tar；
 不要混用不同版本的 center、node 镜像。
 
+解压后先核对校验和：
+
+```bash
+cd inference-monitor-offline-<VERSION>
+sha256sum -c SHA256SUMS
+```
+
+再查看 `release-manifest.json`，确认版本、Git提交、实际捆绑镜像，以及NVIDIA镜像
+是否包含。manifest未声明的镜像不属于本次交付物。
+
 ## 1. 网络和机器准备
 
 - 一台中心机器运行一个 `inference-monitor-center`。
