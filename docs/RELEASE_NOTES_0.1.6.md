@@ -19,3 +19,12 @@ MUSA Node；NVIDIA/DCGM组件延期到后续版本。
 - 引入Schema V2、多网络地址、维护态、强配置门禁和统一部署入口。
 - 增加自动预检、幂等升级、失败回滚和统一验收报告。
 - 记录镜像ID、架构、SHA256、配置hash和离线Artifact来源。
+
+## 交付体积处理
+
+- Center 保持单容器，并基于已验证的运行时内容做层扁平化，减少重复基础层；77 上
+  烟雾验证 Prometheus `/-/ready` 和 Grafana `/api/health` 均通过。
+- 离线包内镜像采用 `docker save` 的 gzip 压缩格式，用户直接执行
+  `docker load -i *.tar.gz`；外层包同时提供 `.tar` 和 `.tar.gz` 校验文件。
+- 0.1.6 离线包只携带压缩后的 Center 与无 DCGM 的 MUSA Node，避免同一镜像的
+  `.tar`/`.tar.gz` 重复占用交付体积。
