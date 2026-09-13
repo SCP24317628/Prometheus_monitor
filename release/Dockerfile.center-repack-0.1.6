@@ -1,0 +1,8 @@
+ARG BASE_IMAGE=inference-monitor-center:0.1.5
+FROM ${BASE_IMAGE}
+COPY monitoring/grafana /opt/inference-monitor/grafana
+COPY images/center/entrypoint.sh /usr/local/bin/inference-monitor-center
+RUN chmod +x /usr/local/bin/inference-monitor-center
+LABEL org.opencontainers.image.title="Inference Monitor Center" \
+      org.opencontainers.image.version="0.1.6" \
+      org.opencontainers.image.dcgm="disabled"
