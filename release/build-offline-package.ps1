@@ -15,9 +15,25 @@ $musa = (Resolve-Path -LiteralPath $MusaImageTar).Path
 $packageName = "inference-monitor-offline-$Version"
 $packageDir = Join-Path $OutputRoot $packageName
 $archive = Join-Path $OutputRoot "$packageName.tar"
+$archiveGzip = Join-Path $OutputRoot "$packageName.tar.gz"
+
+function Compress-GzipFile {
+    param([Parameter(Mandatory = $true)][string]$InputPath, [Parameter(Mandatory = $true)][string]$OutputPath)
+    $inputStream = [IO.File]::OpenRead($InputPath)
+    try {
+        $outputStream = [IO.File]::Create($OutputPath)
+        try {
+            $gzip = New-Object IO.Compression.GZipStream($outputStream, [IO.Compression.CompressionMode]::Compress)
+            try { $inputStream.CopyTo($gzip) } finally { $gzip.Dispose() }
+        } finally { $outputStream.Dispose() }
+    } finally { $inputStream.Dispose() }
+}
 
 if (Test-Path -LiteralPath $packageDir) { Remove-Item -LiteralPath $packageDir -Recurse -Force }
 if (Test-Path -LiteralPath $archive) { Remove-Item -LiteralPath $archive -Force }
+if (Test-Path -LiteralPath $archiveGzip) { Remove-Item -LiteralPath $archiveGzip -Force }
+if (Test-Path -LiteralPath "$archive.sha256") { Remove-Item -LiteralPath "$archive.sha256" -Force }
+if (Test-Path -LiteralPath "$archiveGzip.sha256") { Remove-Item -LiteralPath "$archiveGzip.sha256" -Force }
 New-Item -ItemType Directory -Path (Join-Path $packageDir "images") -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $packageDir "source") -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $packageDir "product") -Force | Out-Null
@@ -32,6 +48,11 @@ Copy-Item -LiteralPath $center -Destination (Join-Path $packageDir "images/infer
 Copy-Item -LiteralPath $musa -Destination (Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar")
 $centerPackageTar = Join-Path $packageDir "images/inference-monitor-center-$Version.tar"
 $musaPackageTar = Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar"
+$centerPackageGzip = "$centerPackageTar.gz"
+$musaPackageGzip = "$musaPackageTar.gz"
+Compress-GzipFile -InputPath $centerPackageTar -OutputPath $centerPackageGzip
+Compress-GzipFile -InputPath $musaPackageTar -OutputPath $musaPackageGzip
+Remove-Item -LiteralPath $centerPackageTar, $musaPackageTar -Force
 
 $sourceZip = Join-Path $packageDir "source/inference-monitor-source-$Version.zip"
 $sourceTar = Join-Path $env:TEMP "inference-monitor-source-$Version.tar"
@@ -74,14 +95,16 @@ $manifest = [ordered]@{
     image_artifacts = @(
         [ordered]@{
             image = "inference-monitor-center:$Version"
-            file = "images/inference-monitor-center-$Version.tar"
-            sha256 = (Get-FileHash -LiteralPath $centerPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
+            file = "images/inference-monitor-center-$Version.tar.gz"
+            sha256 = (Get-FileHash -LiteralPath $centerPackageGzip -Algorithm SHA256).Hash.ToLowerInvariant()
+            compression = "gzip"
             provenance = "release image artifact supplied to the offline packager and verified by SHA256"
         },
         [ordered]@{
             image = "inference-monitor-node-musa:$Version"
-            file = "images/inference-monitor-node-musa-$Version.tar"
-            sha256 = (Get-FileHash -LiteralPath $musaPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
+            file = "images/inference-monitor-node-musa-$Version.tar.gz"
+            sha256 = (Get-FileHash -LiteralPath $musaPackageGzip -Algorithm SHA256).Hash.ToLowerInvariant()
+            compression = "gzip"
             provenance = "release image artifact supplied to the offline packager and verified by SHA256"
         }
     )
@@ -97,7 +120,7 @@ $lines = Get-ChildItem -LiteralPath $packageDir -Recurse -File |
     Where-Object { $_.FullName -ne $sumFile } |
     Sort-Object FullName |
     ForEach-Object {
-        $relative = [IO.Path]::GetRelativePath($packageDir, $_.FullName).Replace("\", "/")
+        $relative = $_.FullName.Substring($packageDir.Length).TrimStart('\', '/').Replace("\", "/")
         "{0}  {1}" -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $relative
     }
 $lines | Set-Content -LiteralPath $sumFile -Encoding ascii
@@ -112,7 +135,12 @@ try {
 } finally {
     Pop-Location
 }
+Compress-GzipFile -InputPath $archive -OutputPath $archiveGzip
 $archiveHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 "$archiveHash  $packageName.tar" | Set-Content -LiteralPath "$archive.sha256" -Encoding ascii
+$archiveGzipHash = (Get-FileHash -LiteralPath $archiveGzip -Algorithm SHA256).Hash.ToLowerInvariant()
+"$archiveGzipHash  $packageName.tar.gz" | Set-Content -LiteralPath "$archiveGzip.sha256" -Encoding ascii
 Write-Host "Offline package: $archive"
 Write-Host "SHA256: $archiveHash"
+Write-Host "Compressed offline package: $archiveGzip"
+Write-Host "Compressed SHA256: $archiveGzipHash"

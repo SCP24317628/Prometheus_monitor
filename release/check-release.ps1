@@ -53,8 +53,8 @@ if ($validatePackage) {
         "source/inference-monitor-source-$Version.zip",
         "product/monitorctl.py", "product/config/monitoring.yml",
         "product/deploy/run-center.sh", "product/deploy/run-node-musa.sh",
-        "images/inference-monitor-center-$Version.tar",
-        "images/inference-monitor-node-musa-$Version.tar"
+        "images/inference-monitor-center-$Version.tar.gz",
+        "images/inference-monitor-node-musa-$Version.tar.gz"
     )
     foreach ($relative in $requiredPackage) {
         if (-not (Test-Path -LiteralPath (Join-Path $PackageDir $relative))) {

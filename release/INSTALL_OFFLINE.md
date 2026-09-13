@@ -46,22 +46,26 @@ python3 monitorctl.py --config config/monitoring.yml urls
 ## 3. 加载和启动中心
 
 ```bash
-docker load -i ../images/inference-monitor-center-<VERSION>.tar
+docker load -i ../images/inference-monitor-center-<VERSION>.tar.gz
 CENTER_IMAGE=inference-monitor-center:<VERSION> \
 CONFIG="$PWD/monitoring/generated/prometheus.yml" \
 ./deploy/run-center.sh
 ```
+
+如果目标 Docker 版本不接受压缩输入，再改用同目录下的 `.tar` 文件。
 
 ## 4. 加载和启动节点
 
 将对应 node tar 和该节点 `.env` 复制到节点：
 
 ```bash
-docker load -i ../images/inference-monitor-node-musa-<VERSION>.tar
+docker load -i ../images/inference-monitor-node-musa-<VERSION>.tar.gz
 NODE_IMAGE=inference-monitor-node-musa:<VERSION> \
 NODE_ENV="$PWD/monitoring/generated/nodes/<节点名>.env" \
 ./deploy/run-node-musa.sh
 ```
+
+同目录保留未压缩 `.tar` 作为兼容回退。
 
 NVIDIA 节点使用 `inference-monitor-node-nvidia-<VERSION>.tar` 和
 `deploy/run-node-nvidia.sh`。
