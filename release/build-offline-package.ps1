@@ -2,7 +2,6 @@ param(
     [string]$Version = "",
     [Parameter(Mandatory = $true)][string]$CenterImageTar,
     [Parameter(Mandatory = $true)][string]$MusaImageTar,
-    [string]$NvidiaImageTar = "",
     [string]$OutputRoot = ""
 )
 
@@ -13,7 +12,6 @@ if (-not $OutputRoot) { $OutputRoot = $PSScriptRoot }
 
 $center = (Resolve-Path -LiteralPath $CenterImageTar).Path
 $musa = (Resolve-Path -LiteralPath $MusaImageTar).Path
-$nvidia = if ($NvidiaImageTar) { (Resolve-Path -LiteralPath $NvidiaImageTar).Path } else { $null }
 $packageName = "inference-monitor-offline-$Version"
 $packageDir = Join-Path $OutputRoot $packageName
 $archive = Join-Path $OutputRoot "$packageName.tar"
@@ -32,12 +30,8 @@ if (-not (Test-Path -LiteralPath $releaseNotes)) { throw "Missing release notes:
 Copy-Item -LiteralPath $releaseNotes -Destination (Join-Path $packageDir "RELEASE_NOTES.md")
 Copy-Item -LiteralPath $center -Destination (Join-Path $packageDir "images/inference-monitor-center-$Version.tar")
 Copy-Item -LiteralPath $musa -Destination (Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar")
-if ($nvidia) {
-    Copy-Item -LiteralPath $nvidia -Destination (Join-Path $packageDir "images/inference-monitor-node-nvidia-$Version.tar")
-}
 $centerPackageTar = Join-Path $packageDir "images/inference-monitor-center-$Version.tar"
 $musaPackageTar = Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar"
-$nvidiaPackageTar = Join-Path $packageDir "images/inference-monitor-node-nvidia-$Version.tar"
 
 $sourceZip = Join-Path $packageDir "source/inference-monitor-source-$Version.zip"
 $sourceTar = Join-Path $env:TEMP "inference-monitor-source-$Version.tar"
@@ -78,19 +72,10 @@ $manifest = [ordered]@{
             provenance = "release image artifact supplied to the offline packager and verified by SHA256"
         }
     )
-    nvidia_image_bundled = [bool]$nvidia
-    nvidia_delivery_note = if ($nvidia) { "bundled" } else { "Dockerfile and run script are included in source; build separately for the target NVIDIA environment" }
+    nvidia_image_bundled = $false
+    nvidia_delivery_note = "NVIDIA/DCGM is intentionally not part of 0.1.6; reserved for a later release"
     credentials_included = $false
     runtime_data_included = $false
-}
-if ($nvidia) {
-    $manifest.bundled_images += "inference-monitor-node-nvidia:$Version"
-    $manifest.image_artifacts += [ordered]@{
-        image = "inference-monitor-node-nvidia:$Version"
-        file = "images/inference-monitor-node-nvidia-$Version.tar"
-        sha256 = (Get-FileHash -LiteralPath $nvidiaPackageTar -Algorithm SHA256).Hash.ToLowerInvariant()
-        provenance = "built from the bundled node-nvidia Dockerfile for the target NVIDIA environment"
-    }
 }
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $packageDir "release-manifest.json") -Encoding utf8
 

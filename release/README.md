@@ -15,7 +15,7 @@ inference-monitor-offline-<VERSION>/
 └── images/
     ├── inference-monitor-center-<VERSION>.tar
     ├── inference-monitor-node-musa-<VERSION>.tar
-    └── inference-monitor-node-nvidia-<VERSION>.tar（可选）
+    └── (0.1.6不包含NVIDIA/DCGM镜像)
 ```
 
 用户不需要执行 `docker build`，只需 `docker load` 后按
@@ -31,5 +31,5 @@ center和node。镜像、配置和源码版本必须一致。
   -NvidiaImageTar <node-nvidia-image.tar>   # 可选
 ```
 
-正式包最低包含center和MUSA node镜像。NVIDIA镜像未传入时，manifest会明确标记
-未捆绑；源码包仍包含NVIDIA Dockerfile和启动脚本，不能把“可构建”表述成“已交付镜像”。
+0.1.6明确不包含NVIDIA/DCGM组件。NVIDIA/DCGM计划在后续版本单独交付；本包的
+manifest会明确标记该组件延期，不把源码接口或Dockerfile表述成已交付镜像。
