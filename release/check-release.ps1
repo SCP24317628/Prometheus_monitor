@@ -64,6 +64,11 @@ if ($validatePackage) {
     $manifest = Get-Content -LiteralPath (Join-Path $PackageDir "release-manifest.json") -Raw | ConvertFrom-Json
     if ($manifest.version -ne $Version) { throw "Manifest version mismatch" }
     if ($manifest.default_dcgm_enabled -ne $false) { throw "DCGM must be disabled by default" }
+    if ($Version -eq "0.1.6") {
+        foreach ($forbidden in @("product/exporters/mtdcgm_exporter.py", "product/plugins/musa_dcgm", "product/plugins/nvidia_dcgm", "product/images/node-nvidia", "product/deploy/run-node-nvidia.sh")) {
+            if (Test-Path -LiteralPath (Join-Path $PackageDir $forbidden)) { throw "0.1.6 must not contain DCGM/NVIDIA component: $forbidden" }
+        }
+    }
     foreach ($artifact in $manifest.image_artifacts) {
         $imagePath = Join-Path $PackageDir $artifact.file
         if (-not (Test-Path -LiteralPath $imagePath)) { throw "Manifest image file missing: $($artifact.file)" }

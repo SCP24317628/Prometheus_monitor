@@ -43,6 +43,19 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "git archive tar failed" }
     tar -xf "$sourceTar" -C (Join-Path $packageDir "product")
     if ($LASTEXITCODE -ne 0) { throw "source extraction failed" }
+    # 0.1.6 intentionally ships no DCGM/NVIDIA component. Keep those interfaces
+    # in Git for the later release, but remove them from this product directory.
+    $excluded = @(
+        "product/exporters/mtdcgm_exporter.py",
+        "product/plugins/musa_dcgm",
+        "product/plugins/nvidia_dcgm",
+        "product/images/node-nvidia",
+        "product/deploy/run-node-nvidia.sh"
+    )
+    foreach ($relative in $excluded) {
+        $path = Join-Path $packageDir $relative
+        if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path -Recurse -Force }
+    }
     $commit = (git rev-parse HEAD).Trim()
 } finally {
     Pop-Location

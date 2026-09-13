@@ -31,5 +31,6 @@ center和node。镜像、配置和源码版本必须一致。
   -NvidiaImageTar <node-nvidia-image.tar>   # 可选
 ```
 
-0.1.6明确不包含NVIDIA/DCGM组件。NVIDIA/DCGM计划在后续版本单独交付；本包的
-manifest会明确标记该组件延期，不把源码接口或Dockerfile表述成已交付镜像。
+0.1.6明确不包含NVIDIA/DCGM组件。该版本的`product/`目录也不包含DCGM/NVIDIA
+插件和镜像构建文件；NVIDIA/DCGM计划在后续版本单独交付。完整源码仓库仍保留
+后续版本开发所需的接口，但不属于本次离线交付物。
