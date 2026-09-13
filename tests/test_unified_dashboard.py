@@ -23,8 +23,8 @@ class UnifiedDashboardTest(unittest.TestCase):
         self.assertIn("GPU Utilization (Unified)", titles)
 
         timeseries_titles = {p.get("title") for p in dashboard["panels"] if p.get("type") == "timeseries"}
-        self.assertIn("Active Requests by Node / Role", timeseries_titles)
-        self.assertIn("Queued Requests by Node / Role", timeseries_titles)
+        self.assertIn("Active / Inflight Requests by Node / Role", timeseries_titles)
+        self.assertIn("Request Queues / Admission Pressure by Node / Role", timeseries_titles)
         self.assertIn("Token Throughput by Node / Role", timeseries_titles)
         self.assertIn("Generation Throughput & Realtime Tokens by Node / Role", timeseries_titles)
         self.assertIn("TTFT Trend by Node / Role (Mean / P90 / P99)", timeseries_titles)
@@ -40,13 +40,13 @@ class UnifiedDashboardTest(unittest.TestCase):
             {p["title"] for p in drilldown["panels"]},
             {"Bootstrap & Allocation p95 by Node", "Forward & Chunked Prefill p95 by Node",
              "Prompt Length p50 / p95 / p99 by Node", "KV Transfer Latency p50 / p95 by Node",
-             "KV Transfer Speed p50 / p95 by Node", "Prefill PD Failures & Retries per Second"},
+             "KV Transfer Speed p50 / p95 by Node", "Admission / Rejection Signals (real SGLang counters)"},
         )
         by_title = {p.get("title"): p for p in dashboard["panels"]}
         self.assertEqual(by_title["Token Throughput by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
         self.assertEqual(by_title["Generation Throughput & Realtime Tokens by Node / Role"]["fieldConfig"]["defaults"]["unit"], "suffix: tok/s")
-        active_exprs = [target["expr"] for target in by_title["Active Requests by Node / Role"]["targets"]]
-        self.assertTrue(all("sum by (node,role)" in expr for expr in active_exprs))
+        active_exprs = [target["expr"] for target in by_title["Active / Inflight Requests by Node / Role"]["targets"]]
+        self.assertTrue(all("by (node,role)" in expr for expr in active_exprs))
         self.assertEqual(by_title["CPU Utilization"]["fieldConfig"]["defaults"]["unit"], "percent")
         self.assertEqual(by_title["CPU Utilization"]["fieldConfig"]["defaults"]["max"], 100)
         self.assertEqual(by_title["Memory Used"]["fieldConfig"]["defaults"]["unit"], "bytes")

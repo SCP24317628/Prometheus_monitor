@@ -25,7 +25,7 @@
     {
       "id": 101,
       "type": "timeseries",
-      "title": "Active Requests by Node / Role",
+      "title": "Active / Inflight Requests by Node / Role",
       "gridPos": {
         "x": 0,
         "y": 1,
@@ -54,20 +54,30 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} {{role}} running"
+          "expr": "max by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} prefill running (rank-normalized)"
         },
         {
           "refId": "B",
-          "expr": "sum by (node,role) (sglang:num_prefill_inflight_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} {{role}} prefill inflight"
+          "expr": "sum by (node,role) (sglang:num_running_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"decode\"})",
+          "legendFormat": "{{node}} decode running (DP sum)"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) (sglang:num_prefill_inflight_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} prefill inflight queue"
+        },
+        {
+          "refId": "D",
+          "expr": "max by (node,role) (sglang:http_requests_active{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} HTTP active"
         }
       ]
     },
     {
       "id": 102,
       "type": "timeseries",
-      "title": "Queued Requests by Node / Role",
+      "title": "Request Queues / Admission Pressure by Node / Role",
       "gridPos": {
         "x": 12,
         "y": 1,
@@ -96,8 +106,33 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
-          "legendFormat": "{{node}} {{role}} queued"
+          "expr": "max by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} prefill scheduler queue (rank-normalized)"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (node,role) (sglang:num_prefill_bootstrap_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} prefill bootstrap queue"
+        },
+        {
+          "refId": "C",
+          "expr": "max by (node,role) (sglang:num_prefill_inflight_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} prefill inflight queue"
+        },
+        {
+          "refId": "D",
+          "expr": "max by (node,role) (sglang:num_decode_prealloc_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} decode prealloc queue"
+        },
+        {
+          "refId": "E",
+          "expr": "max by (node,role) (sglang:num_decode_transfer_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"})",
+          "legendFormat": "{{node}} decode transfer queue"
+        },
+        {
+          "refId": "F",
+          "expr": "sum by (node,role) (sglang:num_queue_reqs{cluster=~\"$cluster\",node=~\"$node\",role=\"decode\"})",
+          "legendFormat": "{{node}} decode scheduler queue (DP sum)"
         }
       ]
     },
@@ -533,7 +568,7 @@
         {
           "id": 156,
           "type": "timeseries",
-          "title": "Prefill PD Failures & Retries per Second",
+          "title": "Admission / Rejection Signals (real SGLang counters)",
           "gridPos": {
             "x": 12,
             "y": 43,
@@ -562,18 +597,23 @@
           "targets": [
             {
               "refId": "A",
-              "expr": "sum by (node) (rate(sglang:num_bootstrap_failed_reqs_total{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m]))",
-              "legendFormat": "{{node}} bootstrap failed"
+              "expr": "sum by (node,role) (rate(sglang:http_responses_total{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\",endpoint=~\"/generate|/v1/.*\",status_code=~\"4..|5..\"}[5m]))",
+              "legendFormat": "{{node}} {{role}} HTTP rejected/error"
             },
             {
               "refId": "B",
-              "expr": "sum by (node) (rate(sglang:num_transfer_failed_reqs_total{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m]))",
-              "legendFormat": "{{node}} transfer failed"
+              "expr": "sum by (node,role) (sglang:num_retracted_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+              "legendFormat": "{{node}} {{role}} retracted requests"
             },
             {
               "refId": "C",
-              "expr": "sum by (node) (rate(sglang:num_prefill_retries_total{cluster=~\"$cluster\",node=~\"$node\",role=\"prefill\"}[5m]))",
-              "legendFormat": "{{node}} prefill retries"
+              "expr": "sum by (node,role) (rate(sglang:failed_session_recoveries_total{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
+              "legendFormat": "{{node}} {{role}} session recoveries/s"
+            },
+            {
+              "refId": "D",
+              "expr": "sum by (node,role) (sglang:num_paused_reqs{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+              "legendFormat": "{{node}} {{role}} paused requests"
             }
           ]
         }
@@ -1083,7 +1123,7 @@
     {
       "id": 34,
       "type": "timeseries",
-      "title": "PD Queue Depths",
+      "title": "PD Queue Depths (rank-normalized)",
       "gridPos": {
         "x": 12,
         "y": 68,
@@ -1111,22 +1151,22 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (node,role) ({__name__=\"sglang:num_prefill_bootstrap_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "expr": "max by (node,role) ({__name__=\"sglang:num_prefill_bootstrap_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
           "legendFormat": "{{node}} bootstrap"
         },
         {
           "refId": "B",
-          "expr": "sum by (node,role) ({__name__=\"sglang:num_prefill_inflight_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "expr": "max by (node,role) ({__name__=\"sglang:num_prefill_inflight_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
           "legendFormat": "{{node}} prefill inflight"
         },
         {
           "refId": "C",
-          "expr": "sum by (node,role) ({__name__=\"sglang:num_decode_prealloc_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "expr": "max by (node,role) ({__name__=\"sglang:num_decode_prealloc_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
           "legendFormat": "{{node}} decode prealloc"
         },
         {
           "refId": "D",
-          "expr": "sum by (node,role) ({__name__=\"sglang:num_decode_transfer_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "expr": "max by (node,role) ({__name__=\"sglang:num_decode_transfer_queue_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
           "legendFormat": "{{node}} decode transfer"
         }
       ]
@@ -1260,7 +1300,7 @@
     {
       "id": 38,
       "type": "timeseries",
-      "title": "PD Failures and Retries/s",
+      "title": "Admission / Rejection Signals (real SGLang counters)",
       "gridPos": {
         "x": 12,
         "y": 84,
@@ -1289,23 +1329,23 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (node,role) (rate({__name__=\"sglang:num_bootstrap_failed_reqs_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
-          "legendFormat": "{{node}} bootstrap failed"
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:http_responses_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\",endpoint=~\"/generate|/v1/.*\",status_code=~\"4..|5..\"}[5m]))",
+          "legendFormat": "{{node}} {{role}} HTTP rejected/error"
         },
         {
           "refId": "B",
-          "expr": "sum by (node,role) (rate({__name__=\"sglang:num_transfer_failed_reqs_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
-          "legendFormat": "{{node}} transfer failed"
+          "expr": "sum by (node,role) ({__name__=\"sglang:num_retracted_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} retracted requests"
         },
         {
           "refId": "C",
-          "expr": "sum by (node,role) (rate({__name__=\"sglang:num_prefill_retries_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
-          "legendFormat": "{{node}} prefill retries"
+          "expr": "sum by (node,role) (rate({__name__=\"sglang:failed_session_recoveries_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
+          "legendFormat": "{{node}} {{role}} session recoveries/s"
         },
         {
           "refId": "D",
-          "expr": "sum by (node,role) (rate({__name__=\"sglang:failed_session_recoveries_total\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))",
-          "legendFormat": "{{node}} recovery failed"
+          "expr": "sum by (node,role) ({__name__=\"sglang:num_paused_reqs\",cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"})",
+          "legendFormat": "{{node}} {{role}} paused requests"
         }
       ]
     },
