@@ -109,4 +109,6 @@ services:
 #   accelerator_vendor: nvidia
 #   plugins:
 #     node: {enabled: true, metrics_group: performance, port: 9100}
+#     # 不依赖DCGM；容器通过宿主nvidia-smi读取GPU指标。
+#     nvidia_smi: {enabled: true, metrics_group: performance, port: 9501}
 #     nvidia_dcgm: {enabled: false, metrics_group: performance, port: 9400}

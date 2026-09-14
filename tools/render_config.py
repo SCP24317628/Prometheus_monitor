@@ -13,7 +13,7 @@ from typing import Any
 import yaml
 
 
-PLUGIN_JOBS = {"node": 9100, "musa": 9500, "musa_dcgm": 9600, "nvidia_dcgm": 9400}
+PLUGIN_JOBS = {"node": 9100, "musa": 9500, "nvidia_smi": 9501, "musa_dcgm": 9600, "nvidia_dcgm": 9400}
 METRICS_GROUPS = {"core", "performance", "detailed"}
 FORBIDDEN_LABELS = {"request_id", "prompt", "input", "output", "error_message", "user"}
 LABEL_NAME = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
@@ -81,10 +81,13 @@ def validate(document: dict[str, Any]) -> tuple[dict[str, Any], dict[str, dict[s
         vendor = str(node.get("accelerator_vendor", "none")).lower()
         musa_dcgm = bool(plugins.get("musa_dcgm", {}).get("enabled", False))
         nvidia_dcgm = bool(plugins.get("nvidia_dcgm", {}).get("enabled", False))
+        nvidia_smi = bool(plugins.get("nvidia_smi", {}).get("enabled", False))
         if musa_dcgm and vendor != "musa":
             raise ConfigError(f"{context}: musa_dcgm requires accelerator_vendor: musa")
         if nvidia_dcgm and vendor != "nvidia":
             raise ConfigError(f"{context}: nvidia_dcgm requires accelerator_vendor: nvidia")
+        if nvidia_smi and vendor != "nvidia":
+            raise ConfigError(f"{context}: nvidia_smi requires accelerator_vendor: nvidia")
         if musa_dcgm and nvidia_dcgm:
             raise ConfigError(f"{context}: musa_dcgm and nvidia_dcgm cannot both be enabled")
         nodes[name] = node
@@ -199,6 +202,8 @@ def render_node_envs(document: dict[str, Any], output_dir: pathlib.Path) -> None
             f"MTDCGM_EXPORTER_PORT={int(plugins.get('musa_dcgm', {}).get('port', 9600))}",
             f"NVIDIA_DCGM_ENABLED={'true' if plugins.get('nvidia_dcgm', {}).get('enabled', False) else 'false'}",
             f"NVIDIA_DCGM_PORT={int(plugins.get('nvidia_dcgm', {}).get('port', 9400))}",
+            f"NVIDIA_SMI_ENABLED={'true' if plugins.get('nvidia_smi', {}).get('enabled', False) else 'false'}",
+            f"NVIDIA_SMI_EXPORTER_PORT={int(plugins.get('nvidia_smi', {}).get('port', 9501))}",
         ]
         (output_dir / f"{name}.env").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 

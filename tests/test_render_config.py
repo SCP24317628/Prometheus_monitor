@@ -85,6 +85,16 @@ class RenderConfigTest(unittest.TestCase):
         jobs = {job["job_name"]: job for job in config["scrape_configs"]}
         self.assertEqual(jobs["nvidia_dcgm"]["static_configs"][0]["targets"], ["192.0.2.10:9400"])
 
+    def test_enabled_nvidia_smi_generates_target(self):
+        document = copy.deepcopy(self.document)
+        node = document["nodes"][0]
+        node["accelerator_vendor"] = "nvidia"
+        node["plugins"]["musa"]["enabled"] = False
+        node["plugins"]["nvidia_smi"] = {"enabled": True, "port": 9501}
+        config = render(document)
+        jobs = {job["job_name"]: job for job in config["scrape_configs"]}
+        self.assertEqual(jobs["nvidia_smi"]["static_configs"][0]["targets"], ["192.0.2.10:9501"])
+
 
 if __name__ == "__main__":
     unittest.main()

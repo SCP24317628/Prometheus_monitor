@@ -8,7 +8,7 @@ docker build -f images/center/Dockerfile -t "$REGISTRY/inference-monitor-center:
 # 0.1.6 deliberately excludes MTDCGM/DCGM from the runtime image.
 docker build --build-arg BASE_IMAGE="${MUSA_BASE_IMAGE:-ubuntu:22.04}" -f images/node-musa/Dockerfile.no-dcgm -t "$REGISTRY/inference-monitor-node-musa:$TAG" .
 if [[ "${BUILD_NVIDIA:-false}" == "true" ]]; then
-  docker build -f images/node-nvidia/Dockerfile -t "$REGISTRY/inference-monitor-node-nvidia:$TAG" .
+  docker build --build-arg BASE_IMAGE="${NVIDIA_BASE_IMAGE:-ubuntu:22.04}" -f images/node-nvidia/Dockerfile.no-dcgm -t "$REGISTRY/inference-monitor-node-nvidia:$TAG" .
 fi
 echo "Built: $REGISTRY/inference-monitor-center:$TAG"
 echo "Built: $REGISTRY/inference-monitor-node-musa:$TAG"

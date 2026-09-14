@@ -15,7 +15,7 @@ inference-monitor-offline-<VERSION>/
 └── images/
     ├── inference-monitor-center-<VERSION>.tar.gz
     ├── inference-monitor-node-musa-<VERSION>.tar.gz
-    └── (0.1.6不包含NVIDIA/DCGM镜像)
+    └── inference-monitor-node-nvidia-<VERSION>.tar.gz（可选，nvidia-smi，无DCGM）
 ```
 
 用户不需要执行 `docker build`，只需 `docker load` 后按
@@ -28,6 +28,7 @@ center和node。镜像、配置和源码版本必须一致。
 .\release\build-offline-package.ps1 `
   -CenterImageTar <center-image.tar> `
   -MusaImageTar <node-musa-image.tar>
+  -NvidiaSmiImageTar <node-nvidia-smi-image.tar>
 ```
 
 最终用户优先加载 `.tar.gz`；Docker 会直接解压并导入，若环境不支持则加载同名

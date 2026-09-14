@@ -2,6 +2,7 @@ param(
     [string]$Version = "",
     [Parameter(Mandatory = $true)][string]$CenterImageTar,
     [Parameter(Mandatory = $true)][string]$MusaImageTar,
+    [string]$NvidiaSmiImageTar = "",
     [string]$OutputRoot = ""
 )
 
@@ -12,6 +13,7 @@ if (-not $OutputRoot) { $OutputRoot = $PSScriptRoot }
 
 $center = (Resolve-Path -LiteralPath $CenterImageTar).Path
 $musa = (Resolve-Path -LiteralPath $MusaImageTar).Path
+$nvidiaSmi = if ($NvidiaSmiImageTar) { (Resolve-Path -LiteralPath $NvidiaSmiImageTar).Path } else { $null }
 $packageName = "inference-monitor-offline-$Version"
 $packageDir = Join-Path $OutputRoot $packageName
 $archive = Join-Path $OutputRoot "$packageName.tar"
@@ -46,6 +48,7 @@ if (-not (Test-Path -LiteralPath $releaseNotes)) { throw "Missing release notes:
 Copy-Item -LiteralPath $releaseNotes -Destination (Join-Path $packageDir "RELEASE_NOTES.md")
 Copy-Item -LiteralPath $center -Destination (Join-Path $packageDir "images/inference-monitor-center-$Version.tar")
 Copy-Item -LiteralPath $musa -Destination (Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar")
+if ($nvidiaSmi) { Copy-Item -LiteralPath $nvidiaSmi -Destination (Join-Path $packageDir "images/inference-monitor-node-nvidia-$Version.tar") }
 $centerPackageTar = Join-Path $packageDir "images/inference-monitor-center-$Version.tar"
 $musaPackageTar = Join-Path $packageDir "images/inference-monitor-node-musa-$Version.tar"
 $centerPackageGzip = "$centerPackageTar.gz"
@@ -53,6 +56,9 @@ $musaPackageGzip = "$musaPackageTar.gz"
 Compress-GzipFile -InputPath $centerPackageTar -OutputPath $centerPackageGzip
 Compress-GzipFile -InputPath $musaPackageTar -OutputPath $musaPackageGzip
 Remove-Item -LiteralPath $centerPackageTar, $musaPackageTar -Force
+$nvidiaSmiPackageTar = Join-Path $packageDir "images/inference-monitor-node-nvidia-$Version.tar"
+$nvidiaSmiPackageGzip = "$nvidiaSmiPackageTar.gz"
+if ($nvidiaSmi) { Compress-GzipFile -InputPath $nvidiaSmiPackageTar -OutputPath $nvidiaSmiPackageGzip; Remove-Item -LiteralPath $nvidiaSmiPackageTar -Force }
 
 $sourceZip = Join-Path $packageDir "source/inference-monitor-source-$Version.zip"
 $sourceTar = Join-Path $env:TEMP "inference-monitor-source-$Version.tar"
@@ -70,7 +76,8 @@ try {
         "product/exporters/mtdcgm_exporter.py",
         "product/plugins/musa_dcgm",
         "product/plugins/nvidia_dcgm",
-        "product/images/node-nvidia",
+        "product/images/node-nvidia/Dockerfile",
+        "product/images/node-nvidia/entrypoint.sh",
         "product/deploy/run-node-nvidia.sh"
     )
     foreach ($relative in $excluded) {
@@ -112,6 +119,19 @@ $manifest = [ordered]@{
     nvidia_delivery_note = "NVIDIA/DCGM is intentionally not part of 0.1.6; reserved for a later release"
     credentials_included = $false
     runtime_data_included = $false
+}
+if ($nvidiaSmi) {
+    $manifest.image_artifacts += [ordered]@{
+        image = "inference-monitor-node-nvidia:$Version"
+        file = "images/inference-monitor-node-nvidia-$Version.tar.gz"
+        sha256 = (Get-FileHash -LiteralPath $nvidiaSmiPackageGzip -Algorithm SHA256).Hash.ToLowerInvariant()
+        compression = "gzip"
+        provenance = "optional no-DCGM NVIDIA node image using host nvidia-smi"
+    }
+    $manifest.bundled_images += "inference-monitor-node-nvidia:$Version"
+    $manifest.nvidia_smi_enabled = $true
+} else {
+    $manifest.nvidia_smi_enabled = $false
 }
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $packageDir "release-manifest.json") -Encoding utf8
 

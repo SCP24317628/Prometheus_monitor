@@ -12,7 +12,7 @@ if (-not $Version) {
 
 $requiredSource = @(
     "VERSION", "README.md", "INSTALL_QUICKSTART.md", "config/monitoring.yml",
-    "deploy/run-center.sh", "deploy/run-node-musa.sh", "deploy/run-node-nvidia.sh",
+    "deploy/run-center.sh", "deploy/run-node-musa.sh", "deploy/run-node-nvidia.sh", "deploy/run-node-nvidia-smi.sh",
     "monitoring/grafana/dashboards/inference-overview.json",
     "docs/PRD_V1.md", "docs/METRICS_CATALOG.md"
 )
@@ -53,6 +53,7 @@ if ($validatePackage) {
         "source/inference-monitor-source-$Version.zip",
         "product/monitorctl.py", "product/config/monitoring.yml",
         "product/deploy/run-center.sh", "product/deploy/run-node-musa.sh",
+        "product/deploy/run-node-nvidia-smi.sh",
         "images/inference-monitor-center-$Version.tar.gz",
         "images/inference-monitor-node-musa-$Version.tar.gz"
     )
@@ -65,7 +66,7 @@ if ($validatePackage) {
     if ($manifest.version -ne $Version) { throw "Manifest version mismatch" }
     if ($manifest.default_dcgm_enabled -ne $false) { throw "DCGM must be disabled by default" }
     if ($Version -eq "0.1.6") {
-        foreach ($forbidden in @("product/exporters/mtdcgm_exporter.py", "product/plugins/musa_dcgm", "product/plugins/nvidia_dcgm", "product/images/node-nvidia", "product/deploy/run-node-nvidia.sh")) {
+        foreach ($forbidden in @("product/exporters/mtdcgm_exporter.py", "product/plugins/musa_dcgm", "product/plugins/nvidia_dcgm", "product/images/node-nvidia/Dockerfile", "product/images/node-nvidia/entrypoint.sh", "product/deploy/run-node-nvidia.sh")) {
             if (Test-Path -LiteralPath (Join-Path $PackageDir $forbidden)) { throw "0.1.6 must not contain DCGM/NVIDIA component: $forbidden" }
         }
     }
