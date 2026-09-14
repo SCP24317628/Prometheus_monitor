@@ -67,7 +67,7 @@ NODE_ENV="$PWD/monitoring/generated/nodes/<节点名>.env" \
 
 同目录保留未压缩 `.tar` 作为兼容回退。
 
-NVIDIA 节点使用 `inference-monitor-node-nvidia-<VERSION>.tar` 和
+NVIDIA 节点（可选）使用 `inference-monitor-node-nvidia-<VERSION>.tar.gz` 和
 `deploy/run-node-nvidia-smi.sh`。该节点通过宿主机挂载的 `nvidia-smi` 读取指标，
 不需要 DCGM；宿主机需安装 NVIDIA 驱动并可执行 `nvidia-smi`。
 

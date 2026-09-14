@@ -26,5 +26,6 @@ MUSA Node；NVIDIA/DCGM组件延期到后续版本。
   烟雾验证 Prometheus `/-/ready` 和 Grafana `/api/health` 均通过。
 - 离线包内镜像采用 `docker save` 的 gzip 压缩格式，用户直接执行
   `docker load -i *.tar.gz`；外层包同时提供 `.tar` 和 `.tar.gz` 校验文件。
-- 0.1.6 离线包只携带压缩后的 Center 与无 DCGM 的 MUSA Node，避免同一镜像的
-  `.tar`/`.tar.gz` 重复占用交付体积。
+- 0.1.6 离线包携带压缩后的 Center、无 DCGM 的 MUSA Node，以及可选的无 DCGM
+  NVIDIA Node（基于宿主机 `nvidia-smi`），避免同一镜像的 `.tar`/`.tar.gz`
+  重复占用交付体积。

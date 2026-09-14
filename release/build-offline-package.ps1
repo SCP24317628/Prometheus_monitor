@@ -115,8 +115,9 @@ $manifest = [ordered]@{
             provenance = "release image artifact supplied to the offline packager and verified by SHA256"
         }
     )
-    nvidia_image_bundled = $false
-    nvidia_delivery_note = "NVIDIA/DCGM is intentionally not part of 0.1.6; reserved for a later release"
+    nvidia_image_bundled = [bool]$nvidiaSmi
+    nvidia_dcgm_image_bundled = $false
+    nvidia_delivery_note = "The optional NVIDIA node uses host nvidia-smi; NVIDIA/DCGM is not bundled"
     credentials_included = $false
     runtime_data_included = $false
 }
