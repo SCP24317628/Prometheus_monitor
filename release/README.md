@@ -34,6 +34,6 @@ center和node。镜像、配置和源码版本必须一致。
 最终用户优先加载 `.tar.gz`；Docker 会直接解压并导入，若环境不支持则加载同名
 `.tar`。外层离线包也同时提供 `inference-monitor-offline-<VERSION>.tar.gz`。
 
-0.1.6明确不包含NVIDIA/DCGM组件。该版本的`product/`目录也不包含DCGM/NVIDIA
-插件和镜像构建文件；NVIDIA/DCGM计划在后续版本单独交付。完整源码仓库仍保留
-后续版本开发所需的接口，但不属于本次离线交付物。
+0.1.6不包含NVIDIA/DCGM组件；如果发布命令传入`-NvidiaSmiImageTar`，可以同时交付
+一个不依赖DCGM、通过宿主机`nvidia-smi`采集的可选NVIDIA Node。`product/`目录不含
+DCGM镜像构建文件，但保留nvidia-smi采集器和启动脚本。
