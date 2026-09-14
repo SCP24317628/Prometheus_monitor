@@ -70,8 +70,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "git archive tar failed" }
     tar -xf "$sourceTar" -C (Join-Path $packageDir "product")
     if ($LASTEXITCODE -ne 0) { throw "source extraction failed" }
-    # 0.1.6 intentionally ships no DCGM/NVIDIA component. Keep those interfaces
-    # in Git for the later release, but remove them from this product directory.
+    # Keep the DCGM-only implementation out of the 0.1.7 product tree. The
+    # nvidia-smi implementation is the supported no-DCGM NVIDIA path.
     $excluded = @(
         "product/exporters/mtdcgm_exporter.py",
         "product/plugins/musa_dcgm",

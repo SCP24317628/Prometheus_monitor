@@ -23,7 +23,7 @@ foreach ($relative in $requiredSource) {
 }
 
 $versionReferences = @(
-    "deploy/run-center.sh", "deploy/run-node-musa.sh", "deploy/run-node-nvidia.sh",
+    "deploy/run-center.sh", "deploy/run-node-musa.sh", "deploy/run-node-nvidia.sh", "deploy/run-node-nvidia-smi.sh",
     "monitoring/docker-compose.center.yml", "monitoring/docker-compose.node.yml"
 )
 foreach ($relative in $versionReferences) {

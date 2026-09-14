@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -p 'test_*.py'
+      - run: python -m py_compile monitorctl.py tools/*.py exporters/*.py
+      - name: Verify tag matches VERSION
+        shell: bash
+        run: test "${GITHUB_REF_NAME#v}" = "$(tr -d '[:space:]' < VERSION)"
+      - name: Create source release archive
+        shell: bash
+        run: |
+          mkdir -p dist
+          git archive --format=tar.gz --prefix="inference-monitor-${GITHUB_REF_NAME#v}/" HEAD > "dist/inference-monitor-${GITHUB_REF_NAME#v}-source.tar.gz"
+          sha256sum dist/* > dist/SHA256SUMS
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/inference-monitor-*-source.tar.gz
+            dist/SHA256SUMS

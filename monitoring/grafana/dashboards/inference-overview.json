@@ -1725,6 +1725,26 @@
       "title": "Ethernet Throughput",
       "type": "timeseries"
     }
+    ,{
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percentunit", "min": 0, "max": 1}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 999},
+      "id": 1001,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "sum by (node, role) (rate(sglang:eplb_balancedness_sum{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])) / clamp_min(sum by (node, role) (rate(sglang:eplb_balancedness_count{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m])), 1e-9)", "legendFormat": "{{node}} {{role}} balancedness", "refId": "A"}],
+      "title": "MoE Expert Balancedness by Node / Role",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 999},
+      "id": 1002,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "sum by (node, role, layer, le) (rate(sglang:eplb_gpu_physical_count_bucket{cluster=~\"$cluster\",node=~\"$node\",role=~\"$role\"}[5m]))", "legendFormat": "{{node}} {{role}} layer={{layer}} gpu<={{le}}", "refId": "A"}],
+      "title": "MoE Expert Dispatch by Layer / GPU Rank",
+      "type": "timeseries"
+    }
   ],
   "refresh": "15s",
   "schemaVersion": 41,

@@ -234,7 +234,22 @@ inference:generation_tokens_per_second
 inference:cached_tokens_per_second
 ```
 
-## 8. 当前环境的真实状态
+## 9. 当前环境的真实状态
+
+## 8.1 MoE 专家分布指标（0.1.7）
+
+这些序列由 SGLang 原生暴露，监控产品只负责抓取和展示：
+
+| 指标 | 数据形态 | 含义 |
+|---|---|---|
+| `sglang:eplb_balancedness_sum/count` | Summary 派生序列 | 每个 forward mode 的专家负载均衡观测；Grafana 用 `rate(sum)/rate(count)` 画趋势 |
+| `sglang:eplb_gpu_physical_count_bucket` | Histogram，标签 `layer`，桶 `le` | 每层专家物理计数落在 GPU rank 桶中的累计分布 |
+| `sglang:eplb_gpu_physical_count_sum/count` | Histogram 派生序列 | 每层分布的计数和及观测数，可用于计算平均 rank，但不能替代桶分布 |
+
+SGLang 源码中的 `--enable-expert-distribution-metrics` 会自动选择 `stat`
+recorder；`eplb_gpu_physical_count` 还受
+`SGLANG_EPLB_HEATMAP_COLLECTION_INTERVAL` 控制，间隔小于等于 0 时不会产生
+heatmap 序列。该功能依赖模型支持 expert location metadata。
 
 77 中心最近检查结果：
 

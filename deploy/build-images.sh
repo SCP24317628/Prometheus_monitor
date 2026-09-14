@@ -2,7 +2,7 @@
 set -euo pipefail
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 REGISTRY=${REGISTRY:-local}
-TAG=${TAG:-0.1.6}
+TAG=${TAG:-0.1.7}
 cd "$ROOT_DIR"
 docker build -f images/center/Dockerfile -t "$REGISTRY/inference-monitor-center:$TAG" .
 # 0.1.6 deliberately excludes MTDCGM/DCGM from the runtime image.

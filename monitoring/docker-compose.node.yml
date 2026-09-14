@@ -1,6 +1,6 @@
 services:
   node:
-    image: inference-monitor-node-musa:${MONITOR_VERSION:-0.1.6}
+    image: inference-monitor-node-musa:${MONITOR_VERSION:-0.1.7}
     container_name: inference-monitor-node
     restart: unless-stopped
     runtime: mthreads

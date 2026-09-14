@@ -84,3 +84,26 @@ python -m unittest discover -s tests -v
 git tag v0.1.6
 git push origin v0.1.6
 ```
+## 版本与 GitHub Release
+
+每次发布必须同步修改根目录 `VERSION`、创建对应的 `docs/RELEASE_NOTES_<版本>.md`，
+并使用同一版本号构建 Center、Node 和离线包。发布前运行：
+
+```powershell
+python -m unittest discover -s tests -p "test_*.py"
+powershell -NoProfile -ExecutionPolicy Bypass -File .\release\check-release.ps1
+```
+
+提交并推送后创建带 `v` 前缀的 tag，例如 `v0.1.7`：
+
+```bash
+git push origin main
+git tag -a v0.1.7 -m "Inference Monitor 0.1.7"
+git push origin v0.1.7
+```
+
+`.github/workflows/release.yml` 会自动创建 GitHub Release 并上传源码归档和
+SHA256。包含 Docker 镜像的离线包体积较大，不能依赖 Git 仓库提交；发布者应在
+本地按 `release/build-offline-package.ps1` 生成离线包，再在 GitHub Release 页面
+将 `.tar.gz` 和对应 `.sha256` 作为 Release assets 上传。这样源码 tag、manifest
+中的 commit、镜像 SHA256 和离线包属于同一版本，用户可以独立校验。
